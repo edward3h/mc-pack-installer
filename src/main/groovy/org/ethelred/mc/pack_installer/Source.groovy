@@ -4,6 +4,7 @@ import groovy.transform.ToString
 import groovy.util.logging.Log
 import groovy.util.logging.Slf4j
 import org.ethelred.mc.pack.InvalidPackException
+import org.ethelred.mc.pack.Manifest
 import org.ethelred.mc.pack.Pack
 import org.ethelred.util.io.PathCategory
 
@@ -18,7 +19,7 @@ import java.nio.file.Path
 class Source {
     static def DEFAULT_SEARCH_ROOTS = [
             Path.of(System.getProperty('user.home'), '/Downloads'),
-//            Path.of(System.getProperty('user.home'), '/src/minecraft')
+            Path.of(System.getProperty('user.home'), '/src/minecraft')
     ]
 
     Path path
@@ -33,15 +34,15 @@ class Source {
             switch (from.fileName.toString()) {
                 case "..":
                     return []
-                case "manifest.json":
-                        return [new Pack(path: from.parent)]
+                case Manifest.NAME:
+                        return [new Pack(from.parent)]
                 case { Files.isDirectory(from) }:
-                    println from
                     return Files.list(from).withCloseable { stream ->
                         stream.toList().collectMany { findPacks(it) }
                     }
                 case ~/.*\.zip$/:
-                    println from
+                case ~/.*\.mcpack$/:
+                case ~/.*\.mcaddon$/:
                     return use(PathCategory) {
                         findPacks(from.openZip())
                     }
