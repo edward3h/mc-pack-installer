@@ -10,4 +10,12 @@ import java.nio.file.Path
 @ToString
 class Pack {
     Path path
+    Manifest manifest
+
+
+
+    Pack(Path dir) {
+        path = dir
+        manifest = new Manifest(path.resolve(Manifest.NAME))
+    }
 }
