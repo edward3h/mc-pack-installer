@@ -2,11 +2,8 @@ package org.ethelred.mc.pack_installer
 
 import groovy.transform.ToString
 import groovy.util.logging.Log
-import groovy.util.logging.Slf4j
-import org.ethelred.mc.pack.InvalidPackException
 import org.ethelred.mc.pack.Manifest
 import org.ethelred.mc.pack.Pack
-import org.ethelred.util.io.PathCategory
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -24,9 +21,10 @@ class Source {
 
     Path path
 
-    static List<Source> findCandidates() {
+    static List<Source> findCandidates(def targets) {
         DEFAULT_SEARCH_ROOTS.findAll { Files.isDirectory(it) }
         .collect { new Source(path:it) }
+        + targets*.path
     }
 
     List<Pack> findPacks(Path from = path) {

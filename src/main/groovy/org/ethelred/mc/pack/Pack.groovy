@@ -10,12 +10,20 @@ import java.nio.file.Path
 @ToString
 class Pack {
     Path path
-    Manifest manifest
-
-
+    @Delegate Manifest manifest
 
     Pack(Path dir) {
         path = dir
         manifest = new Manifest(path.resolve(Manifest.NAME))
+    }
+
+
+    @Override
+    public String toString() {
+        return """\
+Pack{
+    path=$path, 
+    manifest=$manifest
+}"""
     }
 }

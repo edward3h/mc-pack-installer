@@ -26,9 +26,23 @@ dependencies {
 
     // Use the awesome Spock testing and specification framework
     testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
+
+//    implementation 'net.java.truevfs:truevfs:0.12.0'
+    implementation 'net.java.truevfs:truevfs-driver-zip:0.12.2'
+    implementation 'net.java.truevfs:truevfs-access:0.12.2'
+    implementation 'net.java.truevfs:truevfs-kernel-impl_2.13:0.12.2'
+    implementation group: 'net.java.truecommons', name: 'truecommons-key-disable', version: '2.5.0'
+
+
+
+
 }
 
 application {
     // Define the main class for the application.
     mainClassName = 'org.ethelred.mc.App'
+}
+
+test {
+    useJUnitPlatform()
 }
