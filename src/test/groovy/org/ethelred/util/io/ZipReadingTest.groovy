@@ -1,8 +1,9 @@
+/* (C) 2020 Edward Harman */
 package org.ethelred.util.io
 
+import spock.lang.Specification
 import net.java.truevfs.access.TPath
 import net.java.truevfs.access.TVFS
-import spock.lang.Specification
 
 /**
  * TODO

@@ -1,3 +1,4 @@
+/* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
 import groovy.transform.Canonical
@@ -10,10 +11,12 @@ import java.nio.file.Path
 @Canonical
 class Target {
     static def DEFAULT_SEARCH_ROOTS = [
-            Path.of(System.getProperty('user.home'), '/Library/Application Support/mcpelauncher/games/com.mojang'), // Mac OS mcpelauncher
-            Path.of(System.getProperty('user.home'), '/.local/share/mcpelauncher/games/com.mojang'), // Linux mcpelauncher
-            // TODO Windows 10
-            Path.of('/opt/MC/bedrock'), // Linux BDS with MCscripts
+        Path.of(System.getProperty('user.home'), '/Library/Application Support/mcpelauncher/games/com.mojang'),
+        // Mac OS mcpelauncher
+        Path.of(System.getProperty('user.home'), '/.local/share/mcpelauncher/games/com.mojang'),
+        // Linux mcpelauncher
+        // TODO Windows 10
+        Path.of('/opt/MC/bedrock'), // Linux BDS with MCscripts
     ]
 
     enum Type { LOCAL }

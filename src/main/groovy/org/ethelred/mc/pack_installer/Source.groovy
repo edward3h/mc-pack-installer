@@ -1,9 +1,11 @@
+/* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
+
+import org.ethelred.mc.pack.Manifest
+import org.ethelred.mc.pack.Pack
 
 import groovy.transform.ToString
 import groovy.util.logging.Log
-import org.ethelred.mc.pack.Manifest
-import org.ethelred.mc.pack.Pack
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -15,8 +17,8 @@ import java.nio.file.Path
 @Log
 class Source {
     static def DEFAULT_SEARCH_ROOTS = [
-            Path.of(System.getProperty('user.home'), '/Downloads'),
-            Path.of(System.getProperty('user.home'), '/src/minecraft')
+        Path.of(System.getProperty('user.home'), '/Downloads'),
+        Path.of(System.getProperty('user.home'), '/src/minecraft')
     ]
 
     Path path
@@ -33,7 +35,7 @@ class Source {
                 case "..":
                     return []
                 case Manifest.NAME:
-                        return [new Pack(from.parent)]
+                    return [new Pack(from.parent)]
                 case { Files.isDirectory(from) }:
                     return Files.list(from).withCloseable { stream ->
                         stream.toList().collectMany { findPacks(it) }

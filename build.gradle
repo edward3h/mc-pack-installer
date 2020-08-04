@@ -7,31 +7,34 @@
  */
 
 plugins {
-    // Apply the groovy plugin to add support for Groovy
-    id 'groovy'
+	// Apply the groovy plugin to add support for Groovy
+	id 'groovy'
 
-    // Apply the application plugin to add support for building a CLI application.
-    id 'application'
+	// Apply the application plugin to add support for building a CLI application.
+	id 'application'
+	id "com.github.jakemarsden.git-hooks" version "0.0.2"
+	// spotless formatting
+	id 'com.diffplug.spotless' version '5.0.0'
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+	// Use jcenter for resolving dependencies.
+	// You can declare any Maven/Ivy/file repository here.
+	jcenter()
 }
 
 dependencies {
-    // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:3.0.4'
+	// Use the latest Groovy version for building this library
+	implementation 'org.codehaus.groovy:groovy-all:3.0.4'
 
-    // Use the awesome Spock testing and specification framework
-    testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
+	// Use the awesome Spock testing and specification framework
+	testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
 
-//    implementation 'net.java.truevfs:truevfs:0.12.0'
-    implementation 'net.java.truevfs:truevfs-driver-zip:0.12.2'
-    implementation 'net.java.truevfs:truevfs-access:0.12.2'
-    implementation 'net.java.truevfs:truevfs-kernel-impl_2.13:0.12.2'
-    implementation group: 'net.java.truecommons', name: 'truecommons-key-disable', version: '2.5.0'
+	//    implementation 'net.java.truevfs:truevfs:0.12.0'
+	implementation 'net.java.truevfs:truevfs-driver-zip:0.12.2'
+	implementation 'net.java.truevfs:truevfs-access:0.12.2'
+	implementation 'net.java.truevfs:truevfs-kernel-impl_2.13:0.12.2'
+	implementation group: 'net.java.truecommons', name: 'truecommons-key-disable', version: '2.5.0'
 
 
 
@@ -39,10 +42,26 @@ dependencies {
 }
 
 application {
-    // Define the main class for the application.
-    mainClassName = 'org.ethelred.mc.App'
+	// Define the main class for the application.
+	mainClassName = 'org.ethelred.mc.App'
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
+}
+
+gitHooks {
+	hooks = ['pre-commit': 'build test']
+}
+
+spotless {
+	groovy {
+		importOrderFile('spotless.importorder')
+
+		greclipse('4.13.0').configFile('spotless.eclipse.xml', 'org.codehaus.groovy.eclipse.ui.prefs')
+		licenseHeader '/* (C) $YEAR Edward Harman */'
+	}
+	groovyGradle {
+		greclipse()
+	}
 }

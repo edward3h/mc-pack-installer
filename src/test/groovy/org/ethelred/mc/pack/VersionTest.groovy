@@ -1,3 +1,4 @@
+/* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack
 
 import spock.lang.Specification
@@ -18,11 +19,11 @@ class VersionTest extends Specification {
 
         where:
         a | b
-        [] | []
-        [1, 0, 0] | [1, 0, 0]
-        [0, 1, 0] | [0, 1, 0]
-        [1, 0, 0] | [1]
-        [1, 0] | [1, 0, 0, 0, 0, 0]
+        []| []
+        [1, 0, 0]| [1, 0, 0]
+        [0, 1, 0]| [0, 1, 0]
+        [1, 0, 0]| [1]
+        [1, 0]| [1, 0, 0, 0, 0, 0]
     }
 
     @Unroll
@@ -37,12 +38,12 @@ class VersionTest extends Specification {
 
         where:
         a | b
-        [1] | []
-        [0, 0, 1] | []
-        [0, 1, 2] | [0, 1, 1]
-        [1, 0, 1] | [1, 0, 0]
-        [1, 16, 100] | [1, 16, 2]
-        [1, 1, 0] | [0, 12, 1]
+        [1]| []
+        [0, 0, 1]| []
+        [0, 1, 2]| [0, 1, 1]
+        [1, 0, 1]| [1, 0, 0]
+        [1, 16, 100]| [1, 16, 2]
+        [1, 1, 0]| [0, 12, 1]
     }
 
     @Unroll
@@ -55,8 +56,8 @@ class VersionTest extends Specification {
 
         where:
         a | expected
-        [] | "0"
-        [1] | "1"
-        [1, 16, 100] | "1.16.100"
+        []| "0"
+        [1]| "1"
+        [1, 16, 100]| "1.16.100"
     }
 }

@@ -1,3 +1,4 @@
+/* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack
 
 /**

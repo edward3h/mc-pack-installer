@@ -1,3 +1,4 @@
+/* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
 import net.java.truevfs.access.TArchiveDetector
@@ -26,7 +27,7 @@ class Flow {
         // override file extensions treated as zip
         TConfig.get().setArchiveDetector(
                 new TArchiveDetector(
-                        TArchiveDetector.NULL,
-                        "zip|mcpack|mcaddon", new ZipDriver()))
+                TArchiveDetector.NULL,
+                "zip|mcpack|mcaddon", new ZipDriver()))
     }
 }
