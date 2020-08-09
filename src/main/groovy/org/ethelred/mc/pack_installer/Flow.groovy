@@ -19,13 +19,16 @@ class Flow {
         def candidateSources = Source.findCandidates(targets)
         def sources = ui.confirmSource(candidateSources)
 
-        def foundPacks = sources.collectMany { it.findPacks() }
-        ui.listPacks(foundPacks)
+        def library = new Library()
+        sources.each { it.findPacks(library) }
+        ui.listPacks(library)
+
+        targets.each {it.writePacks(library.dependencyGroups) }
     }
 
     static void init() {
         // override file extensions treated as zip
-        TConfig.get().setArchiveDetector(
+        TConfig.current().setArchiveDetector(
                 new TArchiveDetector(
                 TArchiveDetector.NULL,
                 "zip|mcpack|mcaddon", new ZipDriver()))

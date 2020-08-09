@@ -15,6 +15,10 @@ plugins {
 	id "com.github.jakemarsden.git-hooks" version "0.0.2"
 	// spotless formatting
 	id 'com.diffplug.spotless' version '5.0.0'
+
+	// https://github.com/ljacomet/logging-capabilities
+	id("dev.jacomet.logging-capabilities") version "0.9.0"
+
 }
 
 repositories {
@@ -36,15 +40,16 @@ dependencies {
 	implementation 'net.java.truevfs:truevfs-kernel-impl_2.13:0.12.2'
 	implementation group: 'net.java.truecommons', name: 'truecommons-key-disable', version: '2.5.0'
 
-
-
-
+	runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	implementation 'com.google.guava:guava:28.0-jre'
 }
 
 application {
 	// Define the main class for the application.
 	mainClassName = 'org.ethelred.mc.App'
 }
+
+compileGroovy.groovyOptions.configurationScript = file('groovyc.groovy')
 
 test {
 	useJUnitPlatform()

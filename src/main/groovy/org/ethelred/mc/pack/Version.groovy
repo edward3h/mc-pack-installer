@@ -8,7 +8,7 @@ class Version implements Comparable<Version> {
     private List list
 
     Version(List<Integer> list) {
-        this.list = list
+        this.list = list.reverse().dropWhile { it == 0 }.reverse()
     }
 
     @Override
@@ -26,5 +26,17 @@ class Version implements Comparable<Version> {
     @Override
     String toString() {
         list?.join('.') ?: '0'
+    }
+
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
+
+        Version version = (Version) o
+        return compareTo(version) == 0
+    }
+
+    int hashCode() {
+        return list.inject(1) { acc, val -> acc * 17 + val}
     }
 }

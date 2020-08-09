@@ -1,8 +1,11 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc
 
-import org.ethelred.mc.pack.Pack
-import org.ethelred.mc.pack_installer.*
+
+import org.ethelred.mc.pack_installer.Flow
+import org.ethelred.mc.pack_installer.Source
+import org.ethelred.mc.pack_installer.Target
+import org.ethelred.mc.pack_installer.UI
 
 class App implements UI {
 
@@ -26,7 +29,10 @@ class App implements UI {
     }
 
     @Override
-    List<Pack> listPacks(List<Pack> packs) {
-        packs.each {println it}
+    void listPacks(library) {
+        library.dependencyGroups.each { g ->
+            g.each { println it.toStringShort() }
+            println '---'
+        }
     }
 }

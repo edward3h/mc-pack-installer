@@ -1,56 +1,53 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
+import org.ethelred.mc.pack.InvalidPackException
 import org.ethelred.mc.pack.Manifest
 import org.ethelred.mc.pack.Pack
 
 import groovy.transform.ToString
-import groovy.util.logging.Log
 
+import java.nio.file.AccessDeniedException
 import java.nio.file.Files
 import java.nio.file.Path
+
+import net.java.truevfs.access.TPath
 
 /**
  * Source - places to search for packs
  */
 @ToString
-@Log
 class Source {
     static def DEFAULT_SEARCH_ROOTS = [
-        Path.of(System.getProperty('user.home'), '/Downloads'),
-        Path.of(System.getProperty('user.home'), '/src/minecraft')
+        new TPath(System.getProperty('user.home'), '/Downloads'),
+        new TPath(System.getProperty('user.home'), '/src/minecraft')
     ]
 
     Path path
 
     static List<Source> findCandidates(def targets) {
         DEFAULT_SEARCH_ROOTS.findAll { Files.isDirectory(it) }
-        .collect { new Source(path:it) }
-        + targets*.path
+        .collect { new Source(path:it) } + targets.collect { new Source(path: it.path) }
     }
 
-    List<Pack> findPacks(Path from = path) {
+    void findPacks(consumer, Path from = path) {
         try {
             switch (from.fileName.toString()) {
-                case "..":
-                    return []
                 case Manifest.NAME:
-                    return [new Pack(from.parent)]
+                    consumer << new Pack(from.parent)
+                    break
                 case { Files.isDirectory(from) }:
-                    return Files.list(from).withCloseable { stream ->
-                        stream.toList().collectMany { findPacks(it) }
+                    Files.list(from).withCloseable { stream ->
+                        stream.toList().each { findPacks(consumer, it) }
                     }
-                case ~/.*\.zip$/:
-                case ~/.*\.mcpack$/:
-                case ~/.*\.mcaddon$/:
-                    return use(PathCategory) {
-                        findPacks(from.openZip())
-                    }
+                    break
                 default:
-                    return []
+                    return
             }
-        } catch(def ignored) {
-            return []
+        } catch(InvalidPackException ignored) {
+            //ignore
+        } catch(AccessDeniedException e) {
+            log.warning("Access denied ${from}")
         }
     }
 }

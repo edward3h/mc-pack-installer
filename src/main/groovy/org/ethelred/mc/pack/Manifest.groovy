@@ -1,10 +1,10 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack
 
+import groovy.json.JsonParserType
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
 import groovy.transform.ToString
-import groovy.util.logging.Log
 
 import java.nio.file.Path
 
@@ -12,7 +12,6 @@ import java.nio.file.Path
  * See https://bedrock.dev/docs/stable/Addons#manifest.json
  */
 @ToString
-@Log
 class Manifest {
     static String NAME = "manifest.json"
     def json
@@ -30,24 +29,29 @@ class Manifest {
     }
 
     @Memoized
-    def getVersion() {
+    Version getVersion() {
         new Version(json.header.version)
     }
 
-    Manifest(Path path) {
-        json = new JsonSlurper().parse(path)
-        _validate()
+    List<PackId> getDependencies() {
+        json.dependencies.collect { new PackId(uuid: it.uuid, version: new Version(it.version)) }
     }
 
-    void _validate() {
-        log.info("_validate ${json}")
+    def getType() {
+        PackType.fromString(json.modules.first().type)
+    }
+
+    Manifest(Path path) {
         try {
+            json = new JsonSlurper(type: JsonParserType.LAX).parse(path)
             json.with {
                 assert format_version
                 assert header
                 assert header.name
                 assert header.uuid
                 assert modules
+                assert !modules.empty // TODO is there ever more than one module?
+                assert getType()
             }
         } catch(Throwable e) {
             throw new InvalidPackException("Invalid pack", e)
