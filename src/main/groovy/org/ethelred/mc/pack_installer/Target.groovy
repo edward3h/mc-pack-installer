@@ -32,8 +32,8 @@ class Target {
     }
 
     void writePack( pack) {
-        if (!pack in path) {
-
+        if (!pack.isIn(path)) {
+            pack.writeUnder(path)
         }
     }
 

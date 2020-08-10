@@ -14,19 +14,19 @@ class Library {
     Map<PackId, Pack> data = new HashMap()
 
     def leftShift(Pack pack) {
-        log.info "add pack $pack"
+        log.info "add $pack"
         assert pack != null
         data.get(pack, pack) << pack // nice
     }
 
     List<List<Pack>> getDependencyGroups() {
-        def graphbuilder = GraphBuilder.undirected().immutable();
+        def graphbuilder = GraphBuilder.undirected().immutable()
         data.values().each { p ->
             graphbuilder.addNode(p)
             p.dependencies.each { id ->
                 def d = data[id]
                 if (d) graphbuilder.putEdge(p, d)
-                else log.error("Missing dependency $d")
+                else log.error("Missing dependency $id")
             }
         }
         def graph = graphbuilder.build()

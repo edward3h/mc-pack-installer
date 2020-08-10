@@ -40,7 +40,7 @@ dependencies {
 	implementation 'net.java.truevfs:truevfs-kernel-impl_2.13:0.12.2'
 	implementation group: 'net.java.truecommons', name: 'truecommons-key-disable', version: '2.5.0'
 
-	runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 	implementation 'com.google.guava:guava:28.0-jre'
 }
 
