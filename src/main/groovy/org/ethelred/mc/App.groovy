@@ -24,7 +24,7 @@ class App implements UI {
 
     @Override
     List<Target> confirmTarget(List<Target> targets) {
-        targets << new WebTarget(System.getProperty('user.home'), "sites", "mcpacks")
+        targets << new WebTarget(System.getProperty('user.home'), "temp", "mcpacks")
         targets.each { println it }
     }
 

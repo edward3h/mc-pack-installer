@@ -76,11 +76,11 @@ Pack{
             if (!Files.exists(targetPath)) Files.createDirectories(targetPath)
             if (Files.exists(targetPath.resolve(zipName + ".zip")) || Files.exists(targetPath.resolve(zipName + ".mcpack"))) return
 
-                def targetRoot = FileSystems.newFileSystem("jar:file:${targetPath.resolve(zipName + ".zip")}".toURI(), [:]).getRootDirectories().first()
+                def targetRoot = targetPath.resolve(zipName + ".mcpack")
             def sourceRoot = path.first()
             sourceRoot.traverse { sourcePath ->
                 Path relative = sourceRoot.relativize(sourcePath)
-                Path dest = targetRoot.resolve(relative)
+                Path dest = targetRoot.resolve(relative.toString())
                 try {
                     if (Files.exists(dest)) return
                 } catch(e) {
@@ -98,7 +98,7 @@ Pack{
                 }
                 log.debug "copy $sourcePath to $dest"
             }
-            Files.move(targetPath.resolve(zipName + ".zip"), targetPath.resolve(zipName + ".mcpack"), StandardCopyOption.REPLACE_EXISTING)
+            //Files.move(targetPath.resolve(zipName + ".zip"), targetPath.resolve(zipName + ".mcpack"), StandardCopyOption.REPLACE_EXISTING)
         } catch(e) {
             log.error("Failed to write pack ${toStringShort()}", e)
         }
