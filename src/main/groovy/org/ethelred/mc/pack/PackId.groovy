@@ -1,9 +1,12 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack
 
+import groovy.transform.ToString
+
 /**
  * define identity for pack so we can map to dependencies more easily
  */
+@ToString
 class PackId {
     def uuid
     Version version

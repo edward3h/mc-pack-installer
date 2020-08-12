@@ -46,8 +46,8 @@ class Source {
             }
         } catch(InvalidPackException ignored) {
             //ignore
-        } catch(AccessDeniedException e) {
-            log.warning("Access denied ${from}")
+        } catch(e) {
+            log.error("Error reading ${from}", e)
         }
     }
 }

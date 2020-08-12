@@ -2,6 +2,7 @@
 package org.ethelred.mc.pack_installer
 
 import org.ethelred.mc.pack.Pack
+import org.ethelred.mc.pack.PackType
 
 import groovy.transform.Canonical
 
@@ -33,18 +34,28 @@ class Target {
 
     void writePack( pack) {
         if (!pack.isIn(path)) {
-            pack.writeUnder(path)
+            pack.writeUnder(getPackRoot(pack.type))
         }
     }
 
-    enum Type { LOCAL }
-
     Path path
-    Type type
+
+    Path getPackRoot(type) {
+        switch (type) {
+            case PackType.RESOURCE:
+                return path.resolve("development_resource_packs")
+            case PackType.BEHAVIOR:
+                return path.resolve("development_behavior_packs")
+            case PackType.SKIN:
+                return path.resolve("skin_packs")
+            default:
+                throw new IllegalArgumentException("Unknown pack type $type")
+        }
+    }
 
     static List<Target> findCandidates() {
         DEFAULT_SEARCH_ROOTS.findAll { Files.isDirectory(it) }
-        .collect { new Target(path:it, type:Type.LOCAL)}
+        .collect { new Target(path:it)}
     }
 
 

@@ -5,6 +5,7 @@ import org.ethelred.mc.pack_installer.Flow
 import org.ethelred.mc.pack_installer.Source
 import org.ethelred.mc.pack_installer.Target
 import org.ethelred.mc.pack_installer.UI
+import org.ethelred.mc.pack_installer.WebTarget
 import org.slf4j.LoggerFactory
 
 import ch.qos.logback.core.util.StatusPrinter
@@ -23,6 +24,7 @@ class App implements UI {
 
     @Override
     List<Target> confirmTarget(List<Target> targets) {
+        targets << new WebTarget(System.getProperty('user.home'), "sites", "mcpacks")
         targets.each { println it }
     }
 

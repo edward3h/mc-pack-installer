@@ -3,10 +3,13 @@ package org.ethelred.mc.pack
 
 import com.google.common.annotations.VisibleForTesting
 
+import groovy.transform.Memoized
 import groovy.transform.ToString
 
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 
 /**
  * a pack
@@ -55,23 +58,47 @@ Pack{
         r
     }
 
+    @Memoized
+    String getZipName() {
+        "$name ${type.shortCode} $version".replaceAll(/\W+/, ' ').strip().replaceAll(/\W+/, '_')
+    }
+
+    Path getIconPath() {
+        def p = path.first().resolve("pack_icon.png")
+        if (Files.isRegularFile(p))
+            p
+        else
+            null
+    }
+
     void writeUnder(Path targetPath) {
         try {
-            def zipName = "$name ${type.shortCode} $version".replaceAll(/\W+/, '_') + '.mcpack'
-            def targetRoot = targetPath.resolve(zipName)
-            if (!Files.exists(targetRoot)) Files.createDirectories(targetRoot)
+            if (!Files.exists(targetPath)) Files.createDirectories(targetPath)
+            if (Files.exists(targetPath.resolve(zipName + ".zip")) || Files.exists(targetPath.resolve(zipName + ".mcpack"))) return
+
+                def targetRoot = FileSystems.newFileSystem("jar:file:${targetPath.resolve(zipName + ".zip")}".toURI(), [:]).getRootDirectories().first()
             def sourceRoot = path.first()
             sourceRoot.traverse { sourcePath ->
                 Path relative = sourceRoot.relativize(sourcePath)
                 Path dest = targetRoot.resolve(relative)
-                if (Files.exists(dest)) return
+                try {
+                    if (Files.exists(dest)) return
+                } catch(e) {
+                    log.error("Exception checking file existence?", e)
+                    return
+                }
+                try {
                     if (Files.isDirectory(sourcePath)) {
                         Files.createDirectories(dest)
                     } else {
-                        Files.copy(sourcePath, dest)
+                        Files.copy(sourcePath, dest, StandardCopyOption.REPLACE_EXISTING)
                     }
+                } catch(e) {
+                    log.error "Failed to copy ${sourcePath}", e
+                }
                 log.debug "copy $sourcePath to $dest"
             }
+            Files.move(targetPath.resolve(zipName + ".zip"), targetPath.resolve(zipName + ".mcpack"), StandardCopyOption.REPLACE_EXISTING)
         } catch(e) {
             log.error("Failed to write pack ${toStringShort()}", e)
         }
