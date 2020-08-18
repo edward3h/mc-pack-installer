@@ -103,12 +103,11 @@ class AppConfig implements Config {
         script.appConfig = this
         script.run()
     }
-
 }
 
 abstract class AppConfigScript extends Script {
     def target(String path) {
-        appConfig.targets << new Target(path)
+        appConfig.targets << new Target(path: path)
     }
 
     def source(String path) {
@@ -130,9 +129,9 @@ class TargetBuilder {
     Target build() {
         if (path) {
             if (type && "web".equalsIgnoreCase(type)) {
-                return new WebTarget(path)
+                return new WebTarget(path: path)
             } else {
-                return new Target(path)
+                return new Target(path: path)
             }
         } else {
             log.error("target closure did not set path")

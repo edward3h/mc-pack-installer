@@ -17,9 +17,6 @@ import net.java.truevfs.access.TPath
  */
 @ToString
 class WebTarget extends Target {
-    WebTarget(String firstPathElement, String... morePathElements) {
-        super(new TPath(firstPathElement, morePathElements))
-    }
 
     @Override
     Path getPackRoot(type) {

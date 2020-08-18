@@ -15,13 +15,6 @@ import net.java.truevfs.access.TPath
  */
 @Canonical
 class Target {
-    Target(String path) {
-        this.path = new TPath(path)
-    }
-
-    Target(Path path) {
-        this.path = path
-    }
 
     void writePacks(List<List<Pack>> lists) {
         lists.each { l ->
@@ -38,6 +31,10 @@ class Target {
     }
 
     Path path
+
+    def setPath(String v) {
+        this.path = new TPath(v)
+    }
 
     Path getPackRoot(type) {
         switch (type) {
