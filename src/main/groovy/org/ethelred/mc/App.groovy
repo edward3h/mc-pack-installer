@@ -1,8 +1,6 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc
 
-import groovy.transform.ToString
-import net.java.truevfs.access.TPath
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.ethelred.mc.pack_installer.Config
 import org.ethelred.mc.pack_installer.Flow
@@ -13,10 +11,13 @@ import org.ethelred.mc.pack_installer.WebTarget
 
 import picocli.CommandLine
 import dev.dirs.ProjectDirectories
+import groovy.transform.ToString
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.Callable
+
+import net.java.truevfs.access.TPath
 
 @CommandLine.Command(name = "mc-pack-installer", mixinStandardHelpOptions = true, version = "1.0")
 class App implements UI, Callable<Integer> {
@@ -31,27 +32,27 @@ class App implements UI, Callable<Integer> {
     Config config
 
     def loadConfig() {
-         // read defaults from resources. This is expected to exist
-         def defaultFile = getClass().getResource("/default_config.groovy")
-         config = new AppConfig().tap {
-             load(defaultFile)
-         }
+        // read defaults from resources. This is expected to exist
+        def defaultFile = getClass().getResource("/default_config.groovy")
+        config = new AppConfig().tap {
+            load(defaultFile)
+        }
 
-         // include override path, or user config path
-         if (!configOverride) {
-             configOverride = Path.of(ProjectDirectories.from("org", "ethelred", "mc-pack-installer").configDir, "config.groovy")
-         }
-         if (configOverride && Files.isReadable(configOverride)) {
-             config.load(configOverride)
-         }
-         log.info("Read config " + config)
-         if (!Files.exists(configOverride)) {
-             Files.createDirectories(configOverride.parent)
-             configOverride.withWriter {w ->
-                 config.writeTo(w)
-             }
-             log.info("Wrote config to " + configOverride)
-         }
+        // include override path, or user config path
+        if (!configOverride) {
+            configOverride = Path.of(ProjectDirectories.from("org", "ethelred", "mc-pack-installer").configDir, "config.groovy")
+        }
+        if (configOverride && Files.isReadable(configOverride)) {
+            config.load(configOverride)
+        }
+        log.info("Read config " + config)
+        if (!Files.exists(configOverride)) {
+            Files.createDirectories(configOverride.parent)
+            configOverride.withWriter {w ->
+                config.writeTo(w)
+            }
+            log.info("Wrote config to " + configOverride)
+        }
     }
 
     @Override
@@ -87,7 +88,7 @@ class AppConfig implements Config {
 
     AppConfig() {
         this.classLoader = new GroovyClassLoader(this.getClass().getClassLoader(),
-        new CompilerConfiguration(scriptBaseClass: 'org.ethelred.mc.AppConfigScript'))
+                new CompilerConfiguration(scriptBaseClass: 'org.ethelred.mc.AppConfigScript'))
     }
 
     List<Target> targets = []

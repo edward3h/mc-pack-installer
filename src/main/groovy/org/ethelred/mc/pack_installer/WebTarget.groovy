@@ -1,9 +1,9 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
-import groovy.transform.ToString
 import org.ethelred.mc.pack.Pack
 
+import groovy.transform.ToString
 import groovy.xml.MarkupBuilder
 
 import java.nio.file.Files

@@ -15,9 +15,9 @@ import net.java.truevfs.access.TPath
  */
 @Canonical
 class Target {
-     Target(String path) {
-         this.path = new TPath(path)
-     }
+    Target(String path) {
+        this.path = new TPath(path)
+    }
 
     Target(Path path) {
         this.path = path
@@ -55,6 +55,4 @@ class Target {
     static List<Target> findCandidates(List<Target> configTargets) {
         configTargets.findAll { Files.isDirectory(it.path) }
     }
-
-
 }
