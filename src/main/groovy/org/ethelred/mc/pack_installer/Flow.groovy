@@ -13,11 +13,11 @@ class Flow {
         init()
         try {
             // discover known targets
-            def candidateTargets = Target.findCandidates()
+            def candidateTargets = Target.findCandidates(ui.config.targets)
             def targets = ui.confirmTarget(candidateTargets)
 
             // find sources
-            def candidateSources = Source.findCandidates(targets)
+            def candidateSources = Source.findCandidates(ui.config.sources, targets)
             def sources = ui.confirmSource(candidateSources)
 
             def library = new Library()

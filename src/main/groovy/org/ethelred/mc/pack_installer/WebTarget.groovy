@@ -1,6 +1,7 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
+import groovy.transform.ToString
 import org.ethelred.mc.pack.Pack
 
 import groovy.xml.MarkupBuilder
@@ -14,9 +15,10 @@ import net.java.truevfs.access.TPath
 /**
  * instead of installing packs into a game directory, this creates a web listing of them
  */
+@ToString
 class WebTarget extends Target {
     WebTarget(String firstPathElement, String... morePathElements) {
-        path = new TPath(firstPathElement, morePathElements)
+        super(new TPath(firstPathElement, morePathElements))
     }
 
     @Override

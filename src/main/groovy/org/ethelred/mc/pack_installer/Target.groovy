@@ -15,14 +15,13 @@ import net.java.truevfs.access.TPath
  */
 @Canonical
 class Target {
-    static def DEFAULT_SEARCH_ROOTS = [
-        new TPath(System.getProperty('user.home'), '/Library/Application Support/mcpelauncher/games/com.mojang'),
-        // Mac OS mcpelauncher
-        new TPath(System.getProperty('user.home'), '/.local/share/mcpelauncher/games/com.mojang'),
-        // Linux mcpelauncher
-        // TODO Windows 10
-        new TPath('/opt/MC/bedrock'), // Linux BDS with MCscripts
-    ]
+     Target(String path) {
+         this.path = new TPath(path)
+     }
+
+    Target(Path path) {
+        this.path = path
+    }
 
     void writePacks(List<List<Pack>> lists) {
         lists.each { l ->
@@ -53,9 +52,8 @@ class Target {
         }
     }
 
-    static List<Target> findCandidates() {
-        DEFAULT_SEARCH_ROOTS.findAll { Files.isDirectory(it) }
-        .collect { new Target(path:it)}
+    static List<Target> findCandidates(List<Target> configTargets) {
+        configTargets.findAll { Files.isDirectory(it.path) }
     }
 
 

@@ -18,16 +18,10 @@ import net.java.truevfs.access.TPath
  */
 @ToString
 class Source {
-    static def DEFAULT_SEARCH_ROOTS = [
-        new TPath(System.getProperty('user.home'), '/Downloads'),
-        new TPath(System.getProperty('user.home'), '/src/minecraft')
-    ]
-
     Path path
 
-    static List<Source> findCandidates(def targets) {
-        DEFAULT_SEARCH_ROOTS.findAll { Files.isDirectory(it) }
-        .collect { new Source(path:it) } + targets.collect { new Source(path: it.path) }
+    static List<Source> findCandidates(def sources, def targets) {
+        sources.findAll { Files.isDirectory(it.path) } + targets.collect { new Source(path: it.path) }
     }
 
     void findPacks(consumer, Path from = path) {
