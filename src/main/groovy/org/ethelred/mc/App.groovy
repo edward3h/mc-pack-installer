@@ -95,6 +95,7 @@ class AppConfig implements Config {
     List<Source> sources = []
 
     def load(file) {
+        //noinspection GrDeprecatedAPIUsage
         def script = classLoader.parseClass(file.text).newInstance()
         script.binding = new Binding(
                 mcpelauncher: ProjectDirectories.from("", "", "mcpelauncher").dataDir,
