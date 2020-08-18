@@ -27,7 +27,7 @@ class Pack extends PackId {
     Pack(Path dir) {
         path = new HashSet().tap { it.add(dir) }
         manifest = new Manifest(dir.resolve(Manifest.NAME))
-        log.info "new Pack $this"
+        log.debug "new Pack $this"
     }
 
     def leftShift(Pack other) {

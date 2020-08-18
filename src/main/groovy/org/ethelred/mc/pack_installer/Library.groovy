@@ -14,7 +14,7 @@ class Library {
     Map<PackId, Pack> data = new HashMap()
 
     def leftShift(Pack pack) {
-        log.info "add $pack"
+        log.debug "add $pack"
         assert pack != null
         data.get(pack, pack) << pack // nice
     }
