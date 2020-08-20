@@ -13,6 +13,7 @@ import picocli.CommandLine
 import dev.dirs.ProjectDirectories
 import groovy.transform.ToString
 
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.Callable
@@ -40,19 +41,13 @@ class App implements UI, Callable<Integer> {
 
         // include override path, or user config path
         if (!configOverride) {
-            configOverride = Path.of(ProjectDirectories.from("org", "ethelred", "mc-pack-installer").configDir, "config.groovy")
+            configOverride = FileSystems.getDefault().getPath(ProjectDirectories.from("org", "ethelred", "mc-pack-installer").configDir, "config.groovy")
         }
         if (configOverride && Files.isReadable(configOverride)) {
+            log.info "Trying to load config from $configOverride"
             config.load(configOverride)
         }
         log.info("Read config " + config)
-        if (!Files.exists(configOverride)) {
-            Files.createDirectories(configOverride.parent)
-            configOverride.withWriter {w ->
-                config.writeTo(w)
-            }
-            log.info("Wrote config to " + configOverride)
-        }
     }
 
     @Override

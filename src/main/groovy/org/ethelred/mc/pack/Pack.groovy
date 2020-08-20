@@ -60,7 +60,7 @@ Pack{
 
     @Memoized
     String getZipName() {
-        "$name ${type.shortCode} $version".replaceAll(/\W+/, ' ').strip().replaceAll(/\W+/, '_')
+        "$name ${type.shortCode} $version".replaceAll(/\W+/, ' ').trim().replaceAll(/\W+/, '_')
     }
 
     Path getIconPath() {
