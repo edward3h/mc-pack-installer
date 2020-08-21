@@ -76,7 +76,7 @@ test {
 }
 
 gitHooks {
-	hooks = ['pre-commit': 'spotlessApply build test']
+	hooks = ['pre-commit': 'build test']
 }
 
 spotless {

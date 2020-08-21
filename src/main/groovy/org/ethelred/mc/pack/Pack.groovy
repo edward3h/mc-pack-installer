@@ -98,7 +98,7 @@ Pack{
                 }
                 log.debug "copy $sourcePath to $dest"
             }
-            //Files.move(targetPath.resolve(zipName + ".zip"), targetPath.resolve(zipName + ".mcpack"), StandardCopyOption.REPLACE_EXISTING)
+            log.info "Added ${toStringShort()} under $targetPath"
         } catch(e) {
             log.error("Failed to write pack ${toStringShort()}", e)
         }

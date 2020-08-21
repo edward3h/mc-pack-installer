@@ -26,7 +26,7 @@ class Library {
             p.dependencies.each { id ->
                 def d = data[id]
                 if (d) graphbuilder.putEdge(p, d)
-                else log.error("Missing dependency $id")
+                else log.error("Missing dependency $id for pack ${p.toStringShort()}")
             }
         }
         def graph = graphbuilder.build()

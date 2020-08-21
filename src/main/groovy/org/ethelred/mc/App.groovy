@@ -30,14 +30,12 @@ class App implements UI, Callable<Integer> {
     @CommandLine.Option(names = ["--config", "-c"], description = "Use config at this path instead of finding it in user directory")
     Path configOverride
 
-    Config config
+    Config config = new AppConfig()
 
     def loadConfig() {
         // read defaults from resources. This is expected to exist
         def defaultFile = getClass().getResource("/default_config.groovy")
-        config = new AppConfig().tap {
-            load(defaultFile)
-        }
+        config.load(defaultFile)
 
         // include override path, or user config path
         if (!configOverride) {

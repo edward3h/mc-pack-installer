@@ -39,9 +39,9 @@ class Target {
     Path getPackRoot(type) {
         switch (type) {
             case PackType.RESOURCE:
-                return path.resolve("development_resource_packs")
+                return path.resolve("resource_packs")
             case PackType.BEHAVIOR:
-                return path.resolve("development_behavior_packs")
+                return path.resolve("behavior_packs")
             case PackType.SKIN:
                 return path.resolve("skin_packs")
             default:
