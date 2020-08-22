@@ -32,6 +32,16 @@ class App implements UI, Callable<Integer> {
 
     Config config = new AppConfig()
 
+    @CommandLine.Option(names = ["--target", "-t"], description = "Add a target path")
+    def addTarget(String path) {
+        config.targets << new Target(path: path)
+    }
+
+    @CommandLine.Option(names = ["--source", "-s"], description = "Add a source path")
+    def addSource(String path) {
+        config.sources << new Source(path: new TPath(path))
+    }
+
     def loadConfig() {
         // read defaults from resources. This is expected to exist
         def defaultFile = getClass().getResource("/default_config.groovy")
