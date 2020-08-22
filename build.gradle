@@ -33,7 +33,7 @@ repositories {
 }
 
 group = 'org.ethelred'
-version = '0.9.0'
+version = '1.0.0-rc1'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -61,6 +61,7 @@ dependencies {
 }
 
 compileJava {
+	// this is needed for picocli annotation processing
 	options.compilerArgs += ["-Aproject=${project.name}"]
 }
 

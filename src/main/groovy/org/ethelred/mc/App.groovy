@@ -54,6 +54,8 @@ class App implements UI, Callable<Integer> {
         if (configOverride && Files.isReadable(configOverride)) {
             log.info "Trying to load config from $configOverride"
             config.load(configOverride)
+        } else {
+            log.info "No config file with path $configOverride"
         }
         log.info("Read config " + config)
     }
