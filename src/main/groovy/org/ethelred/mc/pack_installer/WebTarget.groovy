@@ -68,7 +68,7 @@ class WebTarget extends Target {
                     mkp.yieldUnescaped("<link href=\"https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap\" rel=\"stylesheet\">")
                     style('''
 img { max-width: 256px; min-width: 128px; }
-th, td { 
+th, td, fieldset { 
     padding: 4px; 
     background-size: cover;
 }
@@ -76,7 +76,7 @@ th { background-image: url("sign_crimson.png"); color: white; }
 td.icon { background-image: url("sign_darkoak.png"); color: white; }
 td.pack { background-image: url("sign.png"); }
 td.type { font-style: italic; background-image: url("sign_jungle.png"); }
-td.description { background-image: url("sign_birch.png"); }
+td.description, fieldset { background-image: url("sign_birch.png"); }
 h1 { color: white; }
 body { 
     font-family: 'Press Start 2P', monospace; 
@@ -90,6 +90,11 @@ body {
                 }
                 body {
                     h1("MC Pack Listing")
+                    fieldset(class: "search") {
+                        span("Search: ")
+                        input(type: "text", id: "searchQuery", onkeyup: "doFilter()")
+                        button(onclick: "doClearFilter()", "Clear")
+                    }
                     table {
                         thead {
                             tr {
@@ -98,7 +103,7 @@ body {
                                 }
                             }
                         }
-                        tbody {
+                        tbody(id: "mainTableBody") {
                             lists.each { group ->
                                 group.each { pack ->
                                     tr {
@@ -145,6 +150,28 @@ body {
                     }
                     script {
                         mkp.yieldUnescaped("""
+function doFilter() {
+    var input, query, tbody;
+    input = document.getElementById('searchQuery');
+    query = input.value.toLowerCase();
+    tbody = document.getElementById('mainTableBody');
+    Array.from(tbody.getElementsByTagName('tr')).forEach(function (tr) {
+        var rowText = tr.textContent || tr.innerText;
+        rowText = rowText.toLowerCase();
+        if (query == "" || rowText.indexOf(query) > -1) {
+            tr.style.display = "";
+        } else {
+            tr.style.display = "none";
+        }
+    });
+}
+
+function doClearFilter() {
+    var input;
+    input = document.getElementById('searchQuery');
+    input.value = "";
+    doFilter();
+}
 """)
                     }
                 }
