@@ -1,6 +1,8 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack
 
+import static org.ethelred.mc.MCText.fromString as t
+
 import groovy.json.JsonParserType
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
@@ -16,21 +18,29 @@ class Manifest {
     static String NAME = "manifest.json"
     def json
 
+    @Memoized
     def getName() {
-        json.header.name
+        t(json.header.name)
     }
 
+    @Memoized
     def getUuid() {
         json.header.uuid
     }
 
+    @Memoized
     def getDescription() {
-        json.header?.description
+        t(json.header?.description)
     }
 
     @Memoized
     Version getVersion() {
         new Version(json.header.version)
+    }
+
+    @Memoized
+    Metadata getMetadata() {
+        new Metadata(metadata: json.metadata)
     }
 
     List<PackId> getDependencies() {
@@ -56,5 +66,21 @@ class Manifest {
         } catch(Throwable e) {
             throw new InvalidPackException("Invalid pack", e)
         }
+    }
+}
+
+class Metadata {
+    def metadata
+
+    List getAuthors() {
+        metadata?.authors?.collect { t(it) }
+    }
+
+    def getLicense() {
+        t(metadata?.license)
+    }
+
+    def getUrl() {
+        metadata?.url
     }
 }

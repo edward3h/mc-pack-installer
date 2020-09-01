@@ -1,6 +1,7 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
+import org.ethelred.mc.MCText
 import org.ethelred.mc.pack.Pack
 import org.ethelred.mc.pack.PackId
 import org.ethelred.mc.pack.Version
@@ -33,7 +34,7 @@ class LibraryTest extends Specification{
 
         @Override
         def getName() {
-            uuid
+            new MCText("name_$uuid")
         }
     }
 

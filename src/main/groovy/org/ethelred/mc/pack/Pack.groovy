@@ -49,7 +49,7 @@ Pack{
     }
 
     String toStringShort() {
-        "${name.padRight(24)} $version ${type.shortCode} $uuid"
+        "${name.ansi.padRight(24)} $version ${type.shortCode} $uuid"
     }
 
     boolean isIn(Path targetPath) {
@@ -60,7 +60,7 @@ Pack{
 
     @Memoized
     String getZipName() {
-        "$name ${type.shortCode} $version".replaceAll(/\W+/, ' ').trim().replaceAll(/\W+/, '_')
+        "${name.strip} ${type.shortCode} $version".replaceAll(/\W+/, ' ').trim().replaceAll(/\W+/, '_')
     }
 
     Path getIconPath() {

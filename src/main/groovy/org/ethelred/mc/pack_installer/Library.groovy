@@ -31,7 +31,7 @@ class Library {
         }
         def graph = graphbuilder.build()
         new HashSet(data.values().collect { Graphs.reachableNodes(graph, it) })
-        .collect { d -> d.sort {it.name }}
-        .sort { it.first().name }
+        .collect { d -> d.sort { Pack p -> p.name.strip }}
+        .sort { it.first().name.strip }
     }
 }
