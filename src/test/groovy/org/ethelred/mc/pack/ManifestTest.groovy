@@ -19,7 +19,7 @@ class ManifestTest extends Specification {
         def m = new Manifest(p)
 
         then:
-        m.name == "valid name"
+        m.name.strip == "valid name"
         m.version == new Version([1, 0, 0])
     }
 
