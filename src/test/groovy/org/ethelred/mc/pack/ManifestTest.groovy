@@ -3,7 +3,7 @@ package org.ethelred.mc.pack
 
 import spock.lang.Specification
 
-import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * TODO
@@ -13,7 +13,7 @@ import java.nio.file.Path
 class ManifestTest extends Specification {
     def "load a valid manifest"() {
         given:
-        def p = Path.of(getClass().getResource('/ManifestTest/valid_manifest.json').toURI())
+        def p = Paths.get(getClass().getResource('/ManifestTest/valid_manifest.json').toURI())
 
         when:
         def m = new Manifest(p)
@@ -25,7 +25,7 @@ class ManifestTest extends Specification {
 
     def "load an invalid manifest"() {
         given:
-        def p = Path.of(getClass().getResource('/ManifestTest/invalid_manifest.json').toURI())
+        def p = Paths.get(getClass().getResource('/ManifestTest/invalid_manifest.json').toURI())
 
         when:
         def m = new Manifest(p)
