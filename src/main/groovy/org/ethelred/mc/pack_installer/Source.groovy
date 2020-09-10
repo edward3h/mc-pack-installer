@@ -26,10 +26,16 @@ class Source {
 
     void findPacks(consumer, Path from = path) {
         try {
+            //noinspection GroovyFallthrough
             switch (from.fileName.toString()) {
                 case Manifest.NAME:
                     consumer << new Pack(from.parent)
                     break
+                case "cache":
+                case "plugins":
+                    if (from.parent?.fileName?.toString() == "bridge") {
+                        return // don't recurse into bridge embeds
+                    }
                 case { Files.isDirectory(from) }:
                     Files.list(from).withCloseable { stream ->
                         stream.toList().each { findPacks(consumer, it) }

@@ -2,6 +2,8 @@
 package org.ethelred.mc.pack
 
 import spock.lang.Specification
+import groovy.json.JsonParserType
+import groovy.json.JsonSlurper
 
 import java.nio.file.Paths
 
@@ -32,5 +34,17 @@ class ManifestTest extends Specification {
 
         then:
         thrown(InvalidPackException)
+    }
+
+    def "load a manifest with a comment"() {
+        given:
+        def p = Paths.get(getClass().getResource('/ManifestTest/bridge_manifest.json').toURI())
+
+        when:
+        def m = new Manifest(p)
+
+        then:
+        m.name.strip == "valid name"
+        m.version == new Version([1, 0, 0])
     }
 }

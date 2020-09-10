@@ -3,11 +3,17 @@ package org.ethelred.mc.pack
 
 import static org.ethelred.mc.MCText.fromString as t
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.base.Charsets
+
 import groovy.json.JsonParserType
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
 import groovy.transform.ToString
 
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 
 /**
@@ -53,7 +59,7 @@ class Manifest {
 
     Manifest(Path path) {
         try {
-            json = new JsonSlurper(type: JsonParserType.LAX).parse(path)
+            json = _parseJson(path)
             json.with {
                 assert format_version
                 assert header
@@ -63,9 +69,36 @@ class Manifest {
                 assert !modules.empty // TODO is there ever more than one module?
                 assert getType()
             }
+            log.info "Valid manifest '$path' '${this.name}'"
         } catch(Throwable e) {
-            throw new InvalidPackException("Invalid pack", e)
+            log.warn("Invalid manifest '$path' \n        ${e.message}")
+            throw new InvalidPackException("Invalid manifest", e)
         }
+    }
+
+    static def _parseJson(Path path) {
+        [
+            StandardCharsets.UTF_8,
+            Charset.forName("Windows-1252"),
+            Charsets.ISO_8859_1
+        ].findResult { Charset cs ->
+            try {
+                return _parseJson(path, cs)
+            } catch(Exception e) {
+                log.warn("Could not read json $path : ${e.message}")
+            }
+        }
+    }
+
+    static {
+        println Charset.availableCharsets()
+    }
+
+    static def _parseJson(Path path, Charset charset) {
+        ObjectMapper objectMapper = new ObjectMapper()
+                .configure(JsonParser.Feature.ALLOW_COMMENTS, true)
+                .configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true)
+        objectMapper.readValue(path.newReader(charset.toString()), Map)
     }
 }
 

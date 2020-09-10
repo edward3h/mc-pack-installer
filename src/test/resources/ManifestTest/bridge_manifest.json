@@ -1,0 +1,25 @@
+// bridge puts comments in json files
+{
+  "format_version": [2, 0, 0],
+  "header": {
+    "name": "valid name",
+    "uuid": "760c3387-345c-3815-b3b6-790e9c6a38bb",
+    "version": [
+      1,
+      0,
+      0
+    ]
+  },
+  "modules": [
+    {
+      "description": "",
+      "type": "resources",
+      "uuid": "280059cb-f09f-3dff-bbdb-7a8ac94bad30",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}
