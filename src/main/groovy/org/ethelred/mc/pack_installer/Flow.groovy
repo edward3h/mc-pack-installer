@@ -11,10 +11,11 @@ class Flow {
 
     void run() {
         init()
+        def targets = []
         try {
             // discover known targets
             def candidateTargets = Target.findCandidates(ui.config.targets)
-            def targets = ui.confirmTarget(candidateTargets)
+            targets = ui.confirmTarget(candidateTargets)
 
             // find sources
             def candidateSources = Source.findCandidates(ui.config.sources, targets)
@@ -25,9 +26,11 @@ class Flow {
             ui.listPacks(library)
 
             targets.each { it.writePacks(library.dependencyGroups) }
+
         } finally {
             TVFS.umount()
         }
+        targets.each { it.finish() }
     }
 
     static void init() {

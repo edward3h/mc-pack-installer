@@ -131,12 +131,16 @@ abstract class AppConfigScript extends Script {
 class TargetBuilder {
     String path
     String type
+    String remote
 
     Target build() {
         if (path) {
             if (type && "web".equalsIgnoreCase(type)) {
-                return new WebTarget(path: path)
+                return new WebTarget(path: path, remote: remote)
             } else {
+                if (remote) {
+                    log.warn "Property \"remote\" is not supported for standard target, ignoring"
+                }
                 return new Target(path: path)
             }
         } else {
@@ -150,5 +154,9 @@ class TargetBuilder {
 
     def type(v) {
         this.type = v
+    }
+
+    def remote(v) {
+        this.remote = v
     }
 }

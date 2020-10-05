@@ -24,6 +24,10 @@ class Target {
         }
     }
 
+    void finish() {
+        // no-op for extension
+    }
+
     void writePack( pack) {
         if (!pack.isIn(path)) {
             pack.writeUnder(getPackRoot(pack.type))

@@ -19,6 +19,8 @@ import net.java.truevfs.access.TPath
 @ToString
 class WebTarget extends Target {
 
+    String remote
+
     @Override
     Path getPackRoot(type) {
         return path.resolve("packs")
@@ -177,6 +179,18 @@ function doClearFilter() {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    void finish() {
+        if (remote) {
+            [
+                "rsync",
+                "-av",
+                path.toString(),
+                remote
+            ].execute().waitForProcessOutput(System.out, System.err)
         }
     }
 }
