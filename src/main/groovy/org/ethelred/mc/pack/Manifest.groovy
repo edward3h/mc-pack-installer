@@ -90,10 +90,6 @@ class Manifest {
         }
     }
 
-    static {
-        println Charset.availableCharsets()
-    }
-
     static def _parseJson(Path path, Charset charset) {
         ObjectMapper objectMapper = new ObjectMapper()
                 .configure(JsonParser.Feature.ALLOW_COMMENTS, true)

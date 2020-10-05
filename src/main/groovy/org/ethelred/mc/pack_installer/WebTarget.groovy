@@ -19,6 +19,8 @@ import net.java.truevfs.access.TPath
 @ToString
 class WebTarget extends Target {
 
+    String remote
+
     @Override
     Path getPackRoot(type) {
         return path.resolve("packs")
@@ -80,6 +82,7 @@ td.description, fieldset { background-image: url("sign_birch.png"); }
 h1 { color: white; }
 body { 
     font-family: 'Press Start 2P', monospace; 
+    font-size: 12px;
     background-color: #222244; 
     color: black; 
     image-rendering: pixelated;
@@ -176,6 +179,18 @@ function doClearFilter() {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    void finish() {
+        if (remote) {
+            [
+                "rsync",
+                "-av",
+                path.toString(),
+                remote
+            ].execute().waitForProcessOutput(System.out, System.err)
         }
     }
 }
