@@ -80,6 +80,7 @@ td.description, fieldset { background-image: url("sign_birch.png"); }
 h1 { color: white; }
 body { 
     font-family: 'Press Start 2P', monospace; 
+    font-size: 12px;
     background-color: #222244; 
     color: black; 
     image-rendering: pixelated;
