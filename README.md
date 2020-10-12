@@ -90,6 +90,10 @@ Instead of writing packs to the Minecraft game, it generates a web page listing
 with download links for the packs. _(At home we use this to make it easier for 
 my kids to download packs to their iPads)_
 
+## Links to other projects
+[BDSAddonInstaller](https://github.com/chegele/BDSAddonInstaller) is a tool to help install packs/addons in Bedrock servers.
+
+
 ## Contributing
 Contributions are welcome!
 
