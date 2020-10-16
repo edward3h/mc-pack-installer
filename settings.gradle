@@ -1,3 +1,5 @@
 rootProject.name = 'mc-pack-installer'
 
 include 'library', 'cli'
+include 'gui'
+
