@@ -1,0 +1,27 @@
+
+plugins {
+	id 'java-library'
+}
+
+dependencies {
+	//    implementation 'net.java.truevfs:truevfs:0.12.0'
+	implementation 'net.java.truevfs:truevfs-driver-zip:0.12.2'
+	implementation 'net.java.truevfs:truevfs-access:0.12.2'
+	implementation 'net.java.truevfs:truevfs-kernel-impl_2.13:0.12.2'
+	implementation group: 'net.java.truecommons', name: 'truecommons-key-disable', version: '2.5.0'
+
+	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	implementation 'com.google.guava:guava:28.0-jre'
+
+	// https://github.com/dirs-dev/directories-jvm
+	implementation 'dev.dirs:directories:20'
+
+	// http://fusesource.github.io/jansi/
+	implementation group: 'org.fusesource.jansi', name: 'jansi', version: '1.8'
+
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
+	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+}

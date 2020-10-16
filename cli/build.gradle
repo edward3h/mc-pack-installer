@@ -1,0 +1,30 @@
+
+plugins {
+	// Apply the application plugin to add support for building a CLI application.
+	id 'application'
+}
+
+dependencies {
+
+	implementation project(':library')
+
+	implementation 'info.picocli:picocli:4.5.0'
+	annotationProcessor 'info.picocli:picocli-codegen:4.5.0'
+
+	// https://github.com/dirs-dev/directories-jvm
+	implementation 'dev.dirs:directories:20'
+
+	// http://fusesource.github.io/jansi/
+	implementation group: 'org.fusesource.jansi', name: 'jansi', version: '1.8'
+
+}
+
+compileJava {
+	// this is needed for picocli annotation processing
+	options.compilerArgs += ["-Aproject=${project.name}"]
+}
+
+application {
+	// Define the main class for the application.
+	mainClassName = 'org.ethelred.mc.App'
+}
