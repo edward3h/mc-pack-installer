@@ -11,12 +11,12 @@ import com.google.common.graph.Graphs
  * logic for combining multiple found instance of packs and resolving dependencies
  */
 class Library {
-    Map<PackId, Pack> data = new HashMap()
+    Map<PackId, PackInstances> data = new HashMap()
 
-    def leftShift(Pack pack) {
+    def leftShift(LocationPack pack) {
         log.debug "add $pack"
         assert pack != null
-        data.get(pack, pack) << pack // nice
+        data.get(pack, new PackInstances()) << pack // nice
     }
 
     List<List<Pack>> getDependencyGroups() {
@@ -31,7 +31,7 @@ class Library {
         }
         def graph = graphbuilder.build()
         new HashSet(data.values().collect { Graphs.reachableNodes(graph, it) })
-        .collect { d -> d.sort { Pack p -> p.name.strip }}
+        .collect { d -> d.sort { PackInstances p -> p.name.strip }}
         .sort { it.first().name.strip }
     }
 }

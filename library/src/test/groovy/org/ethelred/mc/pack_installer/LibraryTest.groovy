@@ -39,7 +39,7 @@ class LibraryTest extends Specification{
     }
 
     def mockPack(id, def... dependencies) {
-        new MockPack(uuid: id, dependencies: dependencies)
+        new LocationPack(pack: new MockPack(uuid: id, dependencies: dependencies))
     }
 
     def "single pack is returned"() {

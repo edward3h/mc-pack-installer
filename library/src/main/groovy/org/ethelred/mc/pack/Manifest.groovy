@@ -1,6 +1,8 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack
 
+import com.fasterxml.jackson.core.json.JsonReadFeature
+
 import static org.ethelred.mc.text.MCText.fromString as t
 
 import com.fasterxml.jackson.core.JsonParser
@@ -89,8 +91,11 @@ class Manifest {
 
     static def _parseJson(Path path, Charset charset) {
         ObjectMapper objectMapper = new ObjectMapper()
-                .configure(JsonParser.Feature.ALLOW_COMMENTS, true)
-                .configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true)
+                .enable(
+                        JsonReadFeature.ALLOW_JAVA_COMMENTS.mappedFeature(),
+                        JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(),
+                        JsonReadFeature.ALLOW_LEADING_ZEROS_FOR_NUMBERS.mappedFeature()
+                )
         objectMapper.readValue(path.newReader(charset.toString()), Map)
     }
 }

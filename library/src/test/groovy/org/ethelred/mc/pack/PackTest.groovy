@@ -1,6 +1,7 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack
 
+import net.java.truevfs.access.TPath
 import spock.lang.Shared
 import spock.lang.Specification
 import groovy.json.JsonGenerator
@@ -17,7 +18,7 @@ class PackTest extends Specification {
     @Shared def tempPaths = []
 
     def generateTestManifestAndDir(values, d = null) {
-        Files.createTempDirectory("PackTest").tap {dir ->
+        def path = Files.createTempDirectory("PackTest").tap {dir ->
             tempPaths << dir
             dir.resolve(Manifest.NAME).withWriter {writer ->
                 def json = new StreamingJsonBuilder(writer, new JsonGenerator.Options().excludeNulls().build())
@@ -33,6 +34,7 @@ class PackTest extends Specification {
                 }
             }
         }
+        new TPath(path)
     }
 
     def "test my own test utility"() {

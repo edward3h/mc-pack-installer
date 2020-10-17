@@ -14,9 +14,9 @@ import net.java.truevfs.access.TPath
  * Target - place to install packs to i.e. client or server pack location
  */
 @Canonical
-class Target {
+class Target extends Location {
 
-    void writePacks(List<List<Pack>> lists) {
+    void writePacks(List<List<PackInstances>> lists) {
         lists.each { l ->
             l.each { pack ->
                 writePack pack
@@ -29,23 +29,20 @@ class Target {
     }
 
     void writePack( pack) {
-        if (!pack.isIn(path)) {
-            pack.writeUnder(getPackRoot(pack.type))
+        if (!pack.hasSource()) {
+            return
+        }
+        if (pack.isDevelopment() || !pack.isInstalled(this)) {
+            pack.writeUnder(getPackRoot(pack.type, pack.isDevelopment()))
         }
     }
 
-    Path path
-
-    def setPath(String v) {
-        this.path = new TPath(v)
-    }
-
-    Path getPackRoot(type) {
+    Path getPackRoot(type, dev) {
         switch (type) {
             case PackType.RESOURCE:
-                return path.resolve("resource_packs")
+                return path.resolve(dev ? "development_resource_packs" : "resource_packs")
             case PackType.BEHAVIOR:
-                return path.resolve("behavior_packs")
+                return path.resolve(dev ? "development_behavior_packs" :"behavior_packs")
             case PackType.SKIN:
                 return path.resolve("skin_packs")
             default:
