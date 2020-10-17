@@ -2,6 +2,8 @@ package org.ethelred.mc.pack_installer
 
 import net.java.truevfs.access.TPath
 
+import java.util.regex.Pattern
+
 abstract class ConfigScript extends Script {
     DefaultConfig appConfig
 
@@ -22,5 +24,20 @@ abstract class ConfigScript extends Script {
         if (t) {
             appConfig.targets << t
         }
+    }
+
+    def source(Closure block) {
+        def s = new SourceBuilder().tap(block).build()
+        if (s) {
+            appConfig.sources << s
+        }
+    }
+
+    def skip(String v) {
+        appConfig.skipPatterns << ~v
+    }
+
+    def skip(Pattern v) {
+        appConfig.skipPatterns << v
     }
 }

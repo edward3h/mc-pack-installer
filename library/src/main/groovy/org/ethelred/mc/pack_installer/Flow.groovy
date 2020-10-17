@@ -18,11 +18,11 @@ class Flow {
             targets = ui.confirmTarget(candidateTargets)
 
             // find sources
-            def candidateSources = Source.findCandidates(ui.config.sources, targets)
+            def candidateSources = Source.findCandidates(ui.config.sources)
             def sources = ui.confirmSource(candidateSources)
 
             def library = new Library()
-            sources.each { it.findPacks(library) }
+            [targets, sources].flatten().each { it.findPacks(library, ui.config.skipPatterns) }
             ui.listPacks(library)
 
             targets.each { it.writePacks(library.dependencyGroups) }

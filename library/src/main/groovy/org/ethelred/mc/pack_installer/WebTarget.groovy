@@ -22,7 +22,7 @@ class WebTarget extends Target {
     String remote
 
     @Override
-    Path getPackRoot(type) {
+    Path getPackRoot(type, ignore) {
         return path.resolve("packs")
     }
 
@@ -87,7 +87,7 @@ body {
     color: black; 
     image-rendering: pixelated;
 }
-
+div.error { color: red; }
 ''')
                     meta("http-equiv":"content-type", content:"text/html; charset=UTF-8")
                 }
@@ -121,6 +121,9 @@ body {
                                             }
                                         }
                                         td(class: "pack") {
+                                            if (pack.isDevelopment()) {
+                                                div(class: "error", "Development!")
+                                            }
                                             div {
                                                 a(href: "packs/${pack.zipName}.mcpack") {
                                                     mkp.yieldUnescaped("${pack.name.html} ${pack.version}")

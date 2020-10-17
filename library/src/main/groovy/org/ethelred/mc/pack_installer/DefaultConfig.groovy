@@ -7,6 +7,7 @@ import org.codehaus.groovy.control.CompilerConfiguration
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.regex.Pattern
 
 @ToString
 class DefaultConfig implements Config {
@@ -19,6 +20,7 @@ class DefaultConfig implements Config {
 
     List<Target> targets = []
     List<Source> sources = []
+    List<Pattern> skipPatterns = []
 
     def loadDefault() {
         def defaultFile = Paths.get(getClass().getResource("/default_config.groovy").toURI())
