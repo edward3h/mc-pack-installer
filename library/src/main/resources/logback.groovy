@@ -3,4 +3,4 @@ appender("CONSOLE", ConsoleAppender) {
         pattern = "%highlight(%-5level) %boldWhite(%logger{15}) - %boldYellow(%msg) %n"
     }
 }
-root(WARN, ["CONSOLE"])
+root(INFO, ["CONSOLE"])

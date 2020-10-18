@@ -18,9 +18,9 @@ class DefaultConfig implements Config {
                 new CompilerConfiguration(scriptBaseClass: ConfigScript.name))
     }
 
-    List<Target> targets = []
-    List<Source> sources = []
-    List<Pattern> skipPatterns = []
+    Set<Target> targets = new HashSet<>()
+    Set<Source> sources = new HashSet<>()
+    Set<Pattern> skipPatterns = new HashSet<>()
 
     def loadDefault() {
         def defaultFile = Paths.get(getClass().getResource("/default_config.groovy").toURI())
@@ -34,18 +34,18 @@ class DefaultConfig implements Config {
     }
 
     def load(file) {
-        log.warn "$file"
+        log.debug "$file"
         if (file && Files.isReadable(file)) {
-            log.warn "${file.text}"
+            log.debug "${file.text}"
             //noinspection GrDeprecatedAPIUsage
             def script = classLoader.parseClass(file.text).newInstance()
             script.binding = new Binding(
                     mcpelauncher: ProjectDirectories.from("", "", "mcpelauncher").dataDir,
                     HOME: System.getProperty("user.home")
             )
-            log.warn "${this}"
+            log.debug "${this}"
             script.setAppConfig(this)
-            log.warn "${script.dump()}"
+            log.debug "${script.dump()}"
             script.run()
         } else {
         log.info "No config file with path $configOverride"

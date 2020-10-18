@@ -13,6 +13,7 @@ import picocli.CommandLine
 
 import java.nio.file.Path
 import java.util.concurrent.Callable
+import java.util.regex.Pattern
 
 @CommandLine.Command(name = "mc-pack-installer", mixinStandardHelpOptions = true, version = "1.0")
 class App implements UI, Callable<Integer> {
@@ -34,6 +35,11 @@ class App implements UI, Callable<Integer> {
     @CommandLine.Option(names = ["--source", "-s"], description = "Add a source path")
     def addSource(String path) {
         config.sources << new Source(path: path)
+    }
+
+    @CommandLine.Option(names = ["--skip", "-k"], description = "Add a skip pattern (regexp)")
+    def addSkipPattern(Pattern p) {
+        config.skipPatterns << p
     }
 
     def loadConfig() {
@@ -58,12 +64,12 @@ class App implements UI, Callable<Integer> {
     }
 
     @Override
-    List<Target> confirmTarget(List<Target> targets) {
+    Set<Target> confirmTarget(Set<Target> targets) {
         targets.each { println it }
     }
 
     @Override
-    List<Source> confirmSource(List<Source> sources) {
+    Set<Source> confirmSource(Set<Source> sources) {
         sources.each { println it }
     }
 

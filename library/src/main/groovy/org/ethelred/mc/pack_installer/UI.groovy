@@ -6,17 +6,17 @@ import java.util.regex.Pattern
 interface UI {
     Config getConfig()
 
-    List<Target> confirmTarget(List<Target> targets)
+    Set<Target> confirmTarget(Set<Target> targets)
 
-    List<Source> confirmSource(List<Source> sources)
+    Set<Source> confirmSource(Set<Source> sources)
 
     void listPacks(library)
 }
 
 interface Config {
-    List<Target> getTargets()
+    Set<Target> getTargets()
 
-    List<Source> getSources()
+    Set<Source> getSources()
 
-    List<Pattern> getSkipPatterns()
+    Set<Pattern> getSkipPatterns()
 }

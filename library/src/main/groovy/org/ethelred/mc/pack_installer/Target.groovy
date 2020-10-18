@@ -50,7 +50,7 @@ class Target extends Location {
         }
     }
 
-    static List<Target> findCandidates(List<Target> configTargets) {
+    static Set<Target> findCandidates(Set<Target> configTargets) {
         configTargets.findAll { Files.isDirectory(it.path) }
     }
 }

@@ -27,6 +27,7 @@ class Location {
             //noinspection GroovyFallthrough
             switch (from.fileName.toString()) {
                 case { fn -> skipPatterns.any { p -> fn.matches(p) }} :
+                    log.info "Skipping $from"
                     break
                 case Manifest.NAME:
                     consumer << new LocationPack(pack: new Pack(from.parent), location: this)

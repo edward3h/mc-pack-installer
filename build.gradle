@@ -40,13 +40,18 @@ subprojects {
 		// Use the awesome Spock testing and specification framework
 		testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
 
-
 		implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 	}
 	compileGroovy.groovyOptions.configurationScript = file("${parent.projectDir}/groovyc.groovy")
 	test {
 		useJUnitPlatform()
 	}
+
+	task cleanBin(type: Delete) {
+		delete "$projectDir/bin"
+	}
+
+	clean.dependsOn cleanBin
 }
 
 gitHooks {
