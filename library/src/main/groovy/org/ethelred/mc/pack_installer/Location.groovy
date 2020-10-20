@@ -1,5 +1,6 @@
 package org.ethelred.mc.pack_installer
 
+import groovy.transform.EqualsAndHashCode
 import net.java.truevfs.access.TPath
 import org.ethelred.mc.pack.InvalidPackException
 import org.ethelred.mc.pack.Manifest
@@ -15,6 +16,7 @@ import java.nio.file.Path
  *
  * @author eharman* @since 2020-10-16
  */
+@EqualsAndHashCode()
 class Location {
     TPath path
 
@@ -22,7 +24,7 @@ class Location {
         this.path = new TPath(v)
     }
 
-    void findPacks(consumer, skipPatterns = [], TPath from = path) {
+    void findPacks(consumer, skipPatterns = Collections.emptySet(), TPath from = path) {
         try {
             //noinspection GroovyFallthrough
             switch (from.fileName.toString()) {
@@ -54,6 +56,14 @@ class Location {
 
     boolean isDevelopment() {
         false
+    }
+
+
+    @Override
+    public String toString() {
+        return """\
+${getClass().simpleName}($path)
+"""
     }
 }
 

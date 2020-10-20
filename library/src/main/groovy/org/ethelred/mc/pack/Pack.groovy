@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption
 class Pack extends PackId {
     TPath path
     @Delegate Manifest manifest
+    Translations translations
 
     @VisibleForTesting
     Pack() {
@@ -25,7 +26,7 @@ class Pack extends PackId {
 
     Pack(TPath dir) {
         path = dir
-        manifest = new Manifest(dir.resolve(Manifest.NAME))
+        manifest = new Manifest(dir.resolve(Manifest.NAME), new Translations(dir))
         log.debug "new Pack $this"
     }
 

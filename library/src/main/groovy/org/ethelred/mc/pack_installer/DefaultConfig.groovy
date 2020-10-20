@@ -9,7 +9,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.regex.Pattern
 
-@ToString
 class DefaultConfig implements Config {
     GroovyClassLoader classLoader
 
@@ -50,5 +49,16 @@ class DefaultConfig implements Config {
         } else {
         log.info "No config file with path $configOverride"
     }
+    }
+
+
+    @Override
+    public String toString() {
+        return """\
+DefaultConfig{
+    targets=$targets, 
+    sources=$sources, 
+    skipPatterns=$skipPatterns
+}"""
     }
 }

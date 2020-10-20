@@ -1,6 +1,7 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
+import groovy.transform.EqualsAndHashCode
 import org.ethelred.mc.pack.Pack
 import org.ethelred.mc.pack.PackType
 
@@ -13,7 +14,7 @@ import net.java.truevfs.access.TPath
 /**
  * Target - place to install packs to i.e. client or server pack location
  */
-@Canonical
+@EqualsAndHashCode(callSuper = true)
 class Target extends Location {
 
     void writePacks(List<List<PackInstances>> lists) {

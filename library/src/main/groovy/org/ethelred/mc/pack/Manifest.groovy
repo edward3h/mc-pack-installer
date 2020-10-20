@@ -2,10 +2,6 @@
 package org.ethelred.mc.pack
 
 import com.fasterxml.jackson.core.json.JsonReadFeature
-
-import static org.ethelred.mc.text.MCText.fromString as t
-
-import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Charsets
 import groovy.transform.Memoized
@@ -15,6 +11,8 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 
+import static org.ethelred.mc.text.MCText.fromString
+
 /**
  * See https://bedrock.dev/docs/stable/Addons#manifest.json
  */
@@ -22,6 +20,12 @@ import java.nio.file.Path
 class Manifest {
     static String NAME = "manifest.json"
     def json
+    def translations
+
+    private def t(text) {
+        text = translations.translate(text)
+        fromString(text)
+    }
 
     @Memoized
     def getName() {
@@ -45,7 +49,7 @@ class Manifest {
 
     @Memoized
     Metadata getMetadata() {
-        new Metadata(metadata: json.metadata)
+        new Metadata(metadata: json.metadata, translations: translations)
     }
 
     List<PackId> getDependencies() {
@@ -56,7 +60,8 @@ class Manifest {
         PackType.fromString(json.modules.first().type)
     }
 
-    Manifest(Path path) {
+    Manifest(Path path, Translations translations = new Translations(path.parent)) {
+        this.translations = translations
         try {
             json = _parseJson(path)
             json.with {
@@ -102,6 +107,7 @@ class Manifest {
 
 class Metadata {
     def metadata
+    def translations
 
     List getAuthors() {
         metadata?.authors?.collect { t(it) }
@@ -113,5 +119,10 @@ class Metadata {
 
     def getUrl() {
         metadata?.url
+    }
+
+    private def t(text) {
+        text = translations.translate(text)
+        fromString(text)
     }
 }

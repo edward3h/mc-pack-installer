@@ -1,6 +1,7 @@
 /* (C) 2020 Edward Harman */
 package org.ethelred.mc.pack_installer
 
+import groovy.transform.EqualsAndHashCode
 import org.ethelred.mc.pack.Pack
 
 import groovy.transform.ToString
@@ -16,7 +17,7 @@ import net.java.truevfs.access.TPath
 /**
  * instead of installing packs into a game directory, this creates a web listing of them
  */
-@ToString
+@EqualsAndHashCode(callSuper = true)
 class WebTarget extends Target {
 
     String remote
@@ -57,7 +58,8 @@ class WebTarget extends Target {
     }
 
     @Override
-    void writePacks(List<List<Pack>> lists) {
+    void writePacks(List<List<PackInstances>> lists) {
+        log.warn "WebTarget writePacks"
         super.writePacks(lists)
 
         copyResources()
@@ -196,4 +198,6 @@ function doClearFilter() {
             ].execute().waitForProcessOutput(System.out, System.err)
         }
     }
+
+
 }

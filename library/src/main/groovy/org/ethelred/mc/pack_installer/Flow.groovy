@@ -26,7 +26,8 @@ class Flow {
             ui.listPacks(library)
 
             targets.each { it.writePacks(library.dependencyGroups) }
-
+        } catch(e) {
+            log.error "Uncaught exception in Flow", e
         } finally {
             TVFS.umount()
         }

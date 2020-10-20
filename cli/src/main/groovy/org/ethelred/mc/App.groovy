@@ -52,7 +52,7 @@ class App implements UI, Callable<Integer> {
             log.info "Trying to load config from $configOverride"
             config.load(configOverride)
         }
-        log.info("Read config " + config)
+        println("Read config $config")
     }
 
     @Override
