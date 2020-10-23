@@ -89,7 +89,10 @@ Pack{
             TVFS.sync(targetRoot)
             log.info "Added ${toStringShort()} under $targetPath"
         } catch(e) {
-            log.error("Failed to write pack ${toStringShort()} ${e.message}")
+            log.error($/Failed to write pack ${toStringShort()}:
+source: $path
+target: $targetPath
+message: ${e.message}/$)
 //            System.exit 1
         }
     }
