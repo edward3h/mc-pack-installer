@@ -189,6 +189,7 @@ function doClearFilter() {
 
     @Override
     void finish() {
+        _worldHackSorry()
         if (remote) {
             [
                 "rsync",
@@ -199,5 +200,14 @@ function doClearFilter() {
         }
     }
 
-
+    void _worldHackSorry() {
+        def worlds = Paths.get(path.toString()).resolve("worlds")
+        Files.createDirectories(worlds)
+        def downloads = (System.getProperty("user.home") + "/Downloads") as File
+        downloads.eachFileMatch(~/.*\.mcworld$/) { f ->
+            Files.copy(f.toPath(), worlds.resolve(f.name), StandardCopyOption.REPLACE_EXISTING)
+            def zipFileName = f.name.replaceAll(~/\.mcworld$/, '.zip')
+            Files.copy(f.toPath(), worlds.resolve(zipFileName), StandardCopyOption.REPLACE_EXISTING)
+        }
+    }
 }
