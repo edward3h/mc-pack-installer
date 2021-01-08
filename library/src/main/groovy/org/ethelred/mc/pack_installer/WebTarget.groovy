@@ -111,40 +111,42 @@ div.error { color: red; }
                         tbody(id: "mainTableBody") {
                             lists.each { group ->
                                 group.each { pack ->
-                                    tr {
-                                        def icon = extractIcon(pack)
-                                        if (icon) {
-                                            td(class: "icon") {
-                                                img(icon)
-                                            }
-                                        } else {
-                                            td(class: "icon") {
-                                                mkp.yieldUnescaped("&nbsp;")
-                                            }
-                                        }
-                                        td(class: "pack") {
-                                            if (pack.isDevelopment()) {
-                                                div(class: "error", "Development!")
-                                            }
-                                            div {
-                                                a(href: "packs/${pack.zipName}.mcpack") {
-                                                    mkp.yieldUnescaped("${pack.name.html} ${pack.version}")
+                                    if (matches(pack)) {
+                                        tr {
+                                            def icon = extractIcon(pack)
+                                            if (icon) {
+                                                td(class: "icon") {
+                                                    img(icon)
+                                                }
+                                            } else {
+                                                td(class: "icon") {
+                                                    mkp.yieldUnescaped("&nbsp;")
                                                 }
                                             }
-                                            if (pack.metadata.authors) {
+                                            td(class: "pack") {
+                                                if (pack.isDevelopment()) {
+                                                    div(class: "error", "Development!")
+                                                }
                                                 div {
-                                                    mkp.yieldUnescaped('🧑‍💻 ' + pack.metadata.authors.join(', '))
+                                                    a(href: "packs/${pack.zipName}.mcpack") {
+                                                        mkp.yieldUnescaped("${pack.name.html} ${pack.version}")
+                                                    }
+                                                }
+                                                if (pack.metadata.authors) {
+                                                    div {
+                                                        mkp.yieldUnescaped('🧑‍💻 ' + pack.metadata.authors.join(', '))
+                                                    }
+                                                }
+                                                if (pack.metadata.url) {
+                                                    div {
+                                                        a(href: pack.metadata.url, "🏠 Homepage")
+                                                    }
                                                 }
                                             }
-                                            if (pack.metadata.url) {
-                                                div {
-                                                    a(href: pack.metadata.url, "🏠 Homepage")
-                                                }
+                                            td(class: "type", pack.type)
+                                            td(class: "description") {
+                                                mkp.yieldUnescaped(pack.description.html)
                                             }
-                                        }
-                                        td(class: "type", pack.type)
-                                        td(class: "description") {
-                                            mkp.yieldUnescaped(pack.description.html)
                                         }
                                     }
                                 }
@@ -191,12 +193,14 @@ function doClearFilter() {
     void finish() {
         _worldHackSorry()
         if (remote) {
-            [
+            def cmd = [
                 "rsync",
                 "-av",
-                path.toString(),
+                path.toString().takeAfter("file:"),
                 remote
-            ].execute().waitForProcessOutput(System.out, System.err)
+            ]
+            log.warn cmd.join(' ')
+            cmd.execute().waitForProcessOutput(System.out, System.err)
         }
     }
 

@@ -1,0 +1,2 @@
+target "testdir"
+source "testdir"

@@ -14,14 +14,29 @@ import java.nio.file.Path
 /**
  * TODO
  *
- * @author eharman* @since 2020-10-16
+ * @author edward3h
+ * @since 2020-10-16
  */
-@EqualsAndHashCode()
+@EqualsAndHashCode(includes = ["path"])
 class Location {
     TPath path
+    @Delegate
+    PackMatcher matcher = new PackMatcher()
 
     def setPath(String v) {
-        this.path = new TPath(v)
+        this.path = normalizePath(v)
+    }
+
+    def setPath(Path p) {
+        this.path = normalizePath(p)
+    }
+
+    static TPath normalizePath(Path p) {
+        new TPath(p).toRealPath()
+    }
+
+    static TPath normalizePath(String s) {
+        new TPath(s).toRealPath()
     }
 
     void findPacks(consumer, skipPatterns = Collections.emptySet(), TPath from = path) {
@@ -32,7 +47,10 @@ class Location {
                     log.info "Skipping $from"
                     break
                 case Manifest.NAME:
-                    consumer << new LocationPack(pack: new Pack(from.parent), location: this)
+                    def p = new LocationPack(pack: new Pack(from.parent), location: this)
+                    if (matches(p)) {
+                        consumer << p
+                    }
                     break
                 case "cache":
                 case "plugins":

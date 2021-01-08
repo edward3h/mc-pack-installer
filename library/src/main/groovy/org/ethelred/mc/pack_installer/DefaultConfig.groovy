@@ -2,6 +2,7 @@ package org.ethelred.mc.pack_installer
 
 import dev.dirs.ProjectDirectories
 import groovy.transform.ToString
+import net.java.truevfs.access.TPath
 import org.codehaus.groovy.control.CompilerConfiguration
 
 import java.nio.file.FileSystems
@@ -17,9 +18,16 @@ class DefaultConfig implements Config {
                 new CompilerConfiguration(scriptBaseClass: ConfigScript.name))
     }
 
-    Set<Target> targets = new HashSet<>()
-    Set<Source> sources = new HashSet<>()
+    private Map<TPath,Location> _locations = new HashMap<>()
     Set<Pattern> skipPatterns = new HashSet<>()
+
+    Set<Target> getTargets() {
+        _locations.values().grep(Target) as Set
+    }
+
+    Set<Source> getSources() {
+        _locations.values().grep(Source) as Set
+    }
 
     def loadDefault() {
         def defaultFile = Paths.get(getClass().getResource("/default_config.groovy").toURI())
@@ -60,5 +68,42 @@ DefaultConfig{
     sources=$sources, 
     skipPatterns=$skipPatterns
 }"""
+    }
+
+    Target target(String path, Class type = Target) {
+        def k = Location.normalizePath(path)
+        def v = _locations.get(k)
+        switch (v) {
+            case null:
+                v = type == WebTarget ? new WebTarget(path: k) : new Target(path: k)
+                _locations.put(k, v)
+                break
+            case Target:
+                break
+            default:
+                throw new IllegalStateException("$path is already mapped to $v")
+        }
+        if (type == WebTarget && v.class != WebTarget) {
+            v = new WebTarget(path: k)
+            // TODO copy common properties, but there aren't any yet
+            _locations.put(k, v)
+        }
+        v as Target
+    }
+
+    Source source(String path) {
+        def k = Location.normalizePath(path)
+        def v = _locations.get(k)
+        switch (v) {
+            case null:
+                v = new Source(path: k)
+                _locations.put(k, v)
+                break
+            case Source:
+                break
+            default:
+                throw new IllegalStateException("$path is already mapped to $v")
+        }
+        v as Source
     }
 }

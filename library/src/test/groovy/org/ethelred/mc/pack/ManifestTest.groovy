@@ -10,12 +10,15 @@ import java.nio.file.Paths
 /**
  * TODO
  *
- * @author eharman* @since 2020-08-03
+ * @author edward3h
+ * @since 2020-08-03
  */
 class ManifestTest extends Specification {
+    def root = Paths.get(getClass().getResource('/ManifestTest').toURI())
+
     def "load a valid manifest"() {
         given:
-        def p = Paths.get(getClass().getResource('/ManifestTest/valid_manifest.json').toURI())
+        def p = root.resolve 'valid_manifest.json'
 
         when:
         def m = new Manifest(p)
@@ -27,7 +30,7 @@ class ManifestTest extends Specification {
 
     def "load an invalid manifest"() {
         given:
-        def p = Paths.get(getClass().getResource('/ManifestTest/invalid_manifest.json').toURI())
+        def p = root.resolve'invalid_manifest.json'
 
         when:
         def m = new Manifest(p)
@@ -38,7 +41,7 @@ class ManifestTest extends Specification {
 
     def "load a manifest with a comment"() {
         given:
-        def p = Paths.get(getClass().getResource('/ManifestTest/bridge_manifest.json').toURI())
+        def p = root.resolve'bridge_manifest.json'
 
         when:
         def m = new Manifest(p)

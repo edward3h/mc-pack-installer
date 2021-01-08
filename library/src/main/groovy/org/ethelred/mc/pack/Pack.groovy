@@ -34,8 +34,8 @@ class Pack extends PackId {
     String toString() {
         return """\
 Pack{
-    path=${path.empty ? "EMPTY" : path.first()}, 
-    name=$name, version=$version, uuid=$uuid
+    path=${(!path || path.empty) ? "EMPTY" : path.first()},
+    name=${manifest == null ? "null": name}, version=${manifest == null ? "null": version}, uuid=${manifest == null ? "null" : uuid}
 }"""
     }
 

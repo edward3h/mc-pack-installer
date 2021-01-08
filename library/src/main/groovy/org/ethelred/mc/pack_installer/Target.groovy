@@ -30,6 +30,9 @@ class Target extends Location {
     }
 
     void writePack( pack) {
+        if (!matches(pack)) {
+            return
+        }
         if (!pack.hasSource()) {
             return
         }

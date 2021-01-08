@@ -6,7 +6,8 @@ import java.nio.file.Path
 /**
  * TODO
  *
- * @author eharman* @since 2020-10-18
+ * @author edward3h
+ * @since 2020-10-18
  */
 class Translations {
     def mapping = [:]
