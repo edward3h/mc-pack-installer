@@ -79,9 +79,16 @@ class Location {
 
     @Override
     public String toString() {
-        return """\
+        def s = """\
 ${getClass().simpleName}($path)
 """
+        if (includes) {
+            s += "includes ${includes.join(' ')}\n"
+        }
+        if (excludes) {
+            s += "excludes ${excludes.join(' ')}\n"
+        }
+        s
     }
 }
 

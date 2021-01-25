@@ -28,7 +28,7 @@ class WebTarget extends Target {
     }
 
     Path getOutput() {
-        Path.of(path.toString())
+        Path.of(path.toString().takeAfter("file:"))
     }
 
     def extractIcon(pack) {
@@ -59,12 +59,14 @@ class WebTarget extends Target {
 
     @Override
     void writePacks(List<List<PackInstances>> lists) {
-        log.warn "WebTarget writePacks"
+        log.warn "WebTarget writePacks $output"
         super.writePacks(lists)
 
         copyResources()
 
-        output.resolve("index.html").withPrintWriter { writer ->
+        def indexPath = output.resolve("index.html")
+        log.warn "WebTarget write pack listing $indexPath"
+        _withPrintWriter(indexPath) { writer ->
             def index = new MarkupBuilder(writer)
             index.html {
                 head {
@@ -205,13 +207,30 @@ function doClearFilter() {
     }
 
     void _worldHackSorry() {
-        def worlds = Paths.get(path.toString()).resolve("worlds")
+        def worlds = output.resolve("worlds")
         Files.createDirectories(worlds)
         def downloads = (System.getProperty("user.home") + "/Downloads") as File
         downloads.eachFileMatch(~/.*\.mcworld$/) { f ->
             Files.copy(f.toPath(), worlds.resolve(f.name), StandardCopyOption.REPLACE_EXISTING)
             def zipFileName = f.name.replaceAll(~/\.mcworld$/, '.zip')
             Files.copy(f.toPath(), worlds.resolve(zipFileName), StandardCopyOption.REPLACE_EXISTING)
+        }
+    }
+
+    // the groovy built in catches IOExceptions...
+    static void _withPrintWriter(Path path, Closure block) {
+        PrintWriter w = path.newPrintWriter()
+        block.call(w)
+    }
+
+    @Override
+    boolean exists() {
+        try {
+            Files.createDirectories(path)
+            true
+        } catch (e) {
+            log.error "Failed to create directories $path", e
+            false
         }
     }
 }

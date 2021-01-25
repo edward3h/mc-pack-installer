@@ -54,7 +54,11 @@ class Target extends Location {
         }
     }
 
+    boolean exists() {
+        Files.isDirectory(path)
+    }
+
     static Set<Target> findCandidates(Set<Target> configTargets) {
-        configTargets.findAll { Files.isDirectory(it.path) }
+        configTargets.findAll { it.exists() }
     }
 }
