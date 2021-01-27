@@ -28,3 +28,13 @@ application {
 	// Define the main class for the application.
 	mainClassName = 'org.ethelred.mc.App'
 }
+
+task copyWebResources(type: Copy) {
+	dependsOn(":library:build")
+	from("${project(":library").buildDir}/resources/main") {
+		include("web/**")
+	}
+	into "$buildDir/resources/main"
+}
+
+run.dependsOn copyWebResources

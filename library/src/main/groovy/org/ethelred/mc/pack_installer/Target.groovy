@@ -2,6 +2,8 @@
 package org.ethelred.mc.pack_installer
 
 import groovy.transform.EqualsAndHashCode
+import net.java.truevfs.access.TFile
+import net.java.truevfs.access.TVFS
 import org.ethelred.mc.pack.Pack
 import org.ethelred.mc.pack.PackType
 
@@ -37,7 +39,7 @@ class Target extends Location {
             return
         }
         if (pack.isDevelopment() || !pack.isInstalled(this)) {
-            pack.writeUnder(getPackRoot(pack.type, pack.isDevelopment()))
+            writeResource(pack, getPackRoot(pack.type, pack.isDevelopment()))
         }
     }
 
@@ -60,5 +62,49 @@ class Target extends Location {
 
     static Set<Target> findCandidates(Set<Target> configTargets) {
         configTargets.findAll { it.exists() }
+    }
+
+    void writeWorlds(worlds) {
+        // no-op for normal target
+    }
+
+    /**
+     * implied interface of resource: zipName, path, toStringShort()
+     * @param resource
+     * @param targetPath
+     */
+    void writeResource(resource, TPath targetPath, String targetExt = ".mcpack") {
+        try {
+            if (!Files.exists(targetPath)) Files.createDirectories(targetPath)
+
+//            ".zip .mcpack .mcworld".split().each { ext ->
+//                _tryDelete(targetPath.resolve(resource.zipName + ext))
+//            }
+
+            TFile targetRoot = targetPath.resolve(resource.zipName + targetExt).toFile()
+            TFile sourceRoot = resource.path.toFile()
+            sourceRoot.cp_r(targetRoot)
+            TVFS.sync(targetRoot)
+            log.info "Added ${resource.toStringShort()} under $targetPath"
+        } catch(e) {
+            log.error($/Failed to write resource ${resource.toStringShort()}:
+source: ${resource.path}
+target: $targetPath
+message: ${e.message}/$, e)
+//            System.exit 1
+        }
+    }
+
+     void _tryDelete(TPath tPath)  {
+        try {
+            if (Files.exists(tPath)) {
+                TFile tFile = tPath.toFile()
+                tFile.rm_r()
+                TVFS.sync(tFile)
+            }
+        } catch(e) {
+            log.error("Failed to delete path $tPath", e)
+            System.exit 1
+        }
     }
 }

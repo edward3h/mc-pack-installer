@@ -7,6 +7,7 @@ import org.ethelred.mc.pack.Manifest
 import org.ethelred.mc.pack.Pack
 import org.ethelred.mc.pack.PackId
 import org.ethelred.mc.pack.Version
+import org.ethelred.mc.world.World
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -50,6 +51,12 @@ class Location {
                     def p = new LocationPack(pack: new Pack(from.parent), location: this)
                     if (matches(p)) {
                         consumer << p
+                    }
+                    break
+                case World.LEVELNAME:
+                    if (this instanceof Source) {
+                        def w = new World(from.parent)
+                        consumer << w
                     }
                     break
                 case "cache":

@@ -1,0 +1,29 @@
+img { max-width: 256px; min-width: 128px; }
+th, td, fieldset, .tab {
+    padding: 4px;
+    background-size: cover;
+}
+th { background-image: url("sign_crimson.png"); color: white; }
+td.icon { background-image: url("sign_darkoak.png"); color: white; }
+td.pack { background-image: url("sign.png"); }
+td.type { font-style: italic; background-image: url("sign_jungle.png"); }
+td.description, fieldset, .tab { background-image: url("sign_birch.png"); }
+h1 { color: white; }
+body {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    background-color: #222244;
+    color: black;
+    image-rendering: pixelated;
+}
+div.error { color: red; }
+.navigation {
+    font-size: larger;
+    display: flex;
+}
+.navigation .tab {
+    margin-right: 2px;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px 1px 0 1px;
+}
