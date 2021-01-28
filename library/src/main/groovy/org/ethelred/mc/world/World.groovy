@@ -13,7 +13,8 @@ import static org.ethelred.mc.text.MCText.fromString
 /**
  * TODO
  *
- * @author eharman* @since 2021-01-25
+ * @author edward3h
+ * @since 2021-01-25
  */
 @Canonical(includes = ["name"])
 class World {
