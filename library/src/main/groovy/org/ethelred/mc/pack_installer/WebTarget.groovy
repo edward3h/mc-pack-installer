@@ -28,7 +28,7 @@ class WebTarget extends Target {
     }
 
     Path getOutput() {
-        Path.of(path.toString())
+        Path.of(path.toString().takeAfter("file:"))
     }
 
     def extractIcon(pack) {
@@ -46,55 +46,75 @@ class WebTarget extends Target {
         return null
     }
 
+    // TODO refactor
+    def extractWorldIcon(world) {
+        def p = world.iconPath
+        if (p) {
+            def iconRoot = output.resolve("icons")
+            Files.createDirectories(iconRoot)
+            def iconName = "${world.name.strip}".replaceAll(/\W+/, '_') + '.jpeg'
+            def iconPath = iconRoot.resolve(iconName)
+            if (!Files.exists(iconPath)) {
+                Files.copy(p, iconPath)
+            }
+            return [src: "icons/$iconName", alt: world.name.strip]
+        }
+        return null
+    }
+
+    def _isNewer(Path input, Path output) {
+        def inputTime = Files.getLastModifiedTime(input)
+        def outputTime = Files.getLastModifiedTime(output)
+        log.warn "_isNewer ${input.fileName} $inputTime $outputTime"
+        inputTime > outputTime
+    }
+
     def copyResources() {
         def resourceDir = Paths.get(getClass().getResource("/web").toURI())
+        log.warn "copy resources $resourceDir"
         resourceDir.eachFileRecurse {
             def relative = resourceDir.relativize(it)
             def outpath = output.resolve(relative)
-            if (!Files.exists(outpath)) {
-                Files.copy(it, outpath)
+            log.warn "copy resource $it $outpath"
+            if (!Files.exists(outpath) || _isNewer(it, outpath)) {
+                Files.copy(it, outpath, StandardCopyOption.REPLACE_EXISTING)
             }
         }
     }
 
-    @Override
-    void writePacks(List<List<PackInstances>> lists) {
-        log.warn "WebTarget writePacks"
-        super.writePacks(lists)
+    static def PAGES = [[href: "index.html", title: "Packs"], [href: "worlds.html", title: "Worlds"]]
 
-        copyResources()
+    void navigation(filename, page) {
+        page.div(class: "navigation") {
+            PAGES.each {p ->
+                def current = p.href == "${filename}.html"
+                div(class: "tab ${current ? 'current' : ''}") {
+                    if (current) {
+                        span(p.title)
+                    } else {
+                        a(href: p.href, p.title)
+                    }
+                }
+            }
+        }
+    }
 
-        output.resolve("index.html").withPrintWriter { writer ->
-            def index = new MarkupBuilder(writer)
-            index.html {
+    void writeTablePage(filename, atitle, columnNames, bodyContent) {
+        def pagePath = output.resolve("${filename}.html")
+        log.warn "WebTarget write page $pagePath"
+        _withPrintWriter(pagePath) { writer ->
+            def page = new MarkupBuilder(writer)
+            page.html {
                 head {
-                    title("MC Pack Listing")
+                    title(atitle)
                     mkp.yieldUnescaped("<link href=\"https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap\" rel=\"stylesheet\">")
-                    style('''
-img { max-width: 256px; min-width: 128px; }
-th, td, fieldset { 
-    padding: 4px; 
-    background-size: cover;
-}
-th { background-image: url("sign_crimson.png"); color: white; }
-td.icon { background-image: url("sign_darkoak.png"); color: white; }
-td.pack { background-image: url("sign.png"); }
-td.type { font-style: italic; background-image: url("sign_jungle.png"); }
-td.description, fieldset { background-image: url("sign_birch.png"); }
-h1 { color: white; }
-body { 
-    font-family: 'Press Start 2P', monospace; 
-    font-size: 12px;
-    background-color: #222244; 
-    color: black; 
-    image-rendering: pixelated;
-}
-div.error { color: red; }
-''')
+                    mkp.yieldUnescaped("<link href=\"style.css\" rel=\"stylesheet\">")
+
                     meta("http-equiv":"content-type", content:"text/html; charset=UTF-8")
                 }
                 body {
-                    h1("MC Pack Listing")
+                    h1(atitle)
+                    navigation(filename, page)
                     fieldset(class: "search") {
                         span("Search: ")
                         input(type: "text", id: "searchQuery", onkeyup: "doFilter()")
@@ -103,57 +123,13 @@ div.error { color: red; }
                     table {
                         thead {
                             tr {
-                                "Icon Name Type Description".split().each {
+                                columnNames.each {
                                     th(it)
                                 }
                             }
                         }
                         tbody(id: "mainTableBody") {
-                            lists.each { group ->
-                                group.each { pack ->
-                                    tr {
-                                        def icon = extractIcon(pack)
-                                        if (icon) {
-                                            td(class: "icon") {
-                                                img(icon)
-                                            }
-                                        } else {
-                                            td(class: "icon") {
-                                                mkp.yieldUnescaped("&nbsp;")
-                                            }
-                                        }
-                                        td(class: "pack") {
-                                            if (pack.isDevelopment()) {
-                                                div(class: "error", "Development!")
-                                            }
-                                            div {
-                                                a(href: "packs/${pack.zipName}.mcpack") {
-                                                    mkp.yieldUnescaped("${pack.name.html} ${pack.version}")
-                                                }
-                                            }
-                                            if (pack.metadata.authors) {
-                                                div {
-                                                    mkp.yieldUnescaped('🧑‍💻 ' + pack.metadata.authors.join(', '))
-                                                }
-                                            }
-                                            if (pack.metadata.url) {
-                                                div {
-                                                    a(href: pack.metadata.url, "🏠 Homepage")
-                                                }
-                                            }
-                                        }
-                                        td(class: "type", pack.type)
-                                        td(class: "description") {
-                                            mkp.yieldUnescaped(pack.description.html)
-                                        }
-                                    }
-                                }
-                                tr {
-                                    td(colspan:4) {
-                                        mkp.yieldUnescaped("&nbsp;")
-                                    }
-                                }
-                            }
+                            bodyContent(page)
                         }
                     }
                     script {
@@ -188,16 +164,133 @@ function doClearFilter() {
     }
 
     @Override
-    void finish() {
-        if (remote) {
-            [
-                "rsync",
-                "-av",
-                path.toString(),
-                remote
-            ].execute().waitForProcessOutput(System.out, System.err)
+    void writePacks(List<List<PackInstances>> lists) {
+        log.warn "WebTarget writePacks $output"
+        super.writePacks(lists)
+
+        copyResources()
+
+        writeTablePage("index", "MC Pack Listing", "Icon Name Type Description".split()) { markup ->
+            lists.each { group ->
+                group.each { pack ->
+                    if (matches(pack)) {
+                        markup.tr {
+                            def icon = extractIcon(pack)
+                            if (icon) {
+                                td(class: "icon") {
+                                    img(icon)
+                                }
+                            } else {
+                                td(class: "icon") {
+                                    mkp.yieldUnescaped("&nbsp;")
+                                }
+                            }
+                            td(class: "pack") {
+                                if (pack.isDevelopment()) {
+                                    div(class: "error", "Development!")
+                                }
+                                div {
+                                    a(href: "packs/${pack.zipName}.mcpack") {
+                                        mkp.yieldUnescaped("${pack.name.html} ${pack.version}")
+                                    }
+                                }
+                                if (pack.metadata.authors) {
+                                    div {
+                                        mkp.yieldUnescaped('🧑‍💻 ' + pack.metadata.authors.join(', '))
+                                    }
+                                }
+                                if (pack.metadata.url) {
+                                    div {
+                                        a(href: pack.metadata.url, "🏠 Homepage")
+                                    }
+                                }
+                            }
+                            td(class: "type", pack.type)
+                            td(class: "description") {
+                                mkp.yieldUnescaped(pack.description.html)
+                            }
+                        }
+                    }
+                }
+                markup.tr {
+                    td(colspan:4) {
+                        mkp.yieldUnescaped("&nbsp;")
+                    }
+                }
+            }
         }
     }
 
 
+    void writeWorlds(worlds) {
+        def worldRoot = path.resolve("worlds")
+        worlds.each {
+            writeResource(it, worldRoot, ".zip")
+        }
+        writeTablePage("worlds", "MC World Listing", "Icon Name".split()) { markup ->
+            worlds.each { w ->
+                markup.tr {
+                    def icon = extractWorldIcon(w)
+                    if (icon) {
+                        td(class: "icon") {
+                            img(icon)
+                        }
+                    } else {
+                        td(class: "icon") {
+                            mkp.yieldUnescaped("&nbsp;")
+                        }
+                    }
+                    td(class: "pack") {
+                        div {
+                            a(href: "worlds/${w.zipName}.zip") {
+                                mkp.yieldUnescaped("${w.name.html}")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    void finish() {
+        if (remote) {
+            def cmd = [
+                "rsync",
+                "-av",
+                path.toString().takeAfter("file:"),
+                remote
+            ]
+            log.warn cmd.join(' ')
+            cmd.execute().waitForProcessOutput(System.out, System.err)
+        }
+    }
+
+//    void _worldHackSorry() {
+//        def worlds = output.resolve("worlds")
+//        Files.createDirectories(worlds)
+//        def downloads = (System.getProperty("user.home") + "/Downloads") as File
+//        downloads.eachFileMatch(~/.*\.mcworld$/) { f ->
+//            Files.copy(f.toPath(), worlds.resolve(f.name), StandardCopyOption.REPLACE_EXISTING)
+//            def zipFileName = f.name.replaceAll(~/\.mcworld$/, '.zip')
+//            Files.copy(f.toPath(), worlds.resolve(zipFileName), StandardCopyOption.REPLACE_EXISTING)
+//        }
+//    }
+
+    // the groovy built in catches IOExceptions, I wanted them to be reported
+    static void _withPrintWriter(Path path, Closure block) {
+        PrintWriter w = path.newPrintWriter()
+        block.call(w)
+    }
+
+    @Override
+    boolean exists() {
+        try {
+            Files.createDirectories(path)
+            true
+        } catch (e) {
+            log.error "Failed to create directories $path", e
+            false
+        }
+    }
 }

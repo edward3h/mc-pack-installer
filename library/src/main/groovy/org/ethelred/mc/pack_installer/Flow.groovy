@@ -4,6 +4,7 @@ package org.ethelred.mc.pack_installer
 import net.java.truevfs.access.TArchiveDetector
 import net.java.truevfs.access.TConfig
 import net.java.truevfs.access.TVFS
+import net.java.truevfs.comp.zipdriver.AbstractZipDriverEntry
 import net.java.truevfs.comp.zipdriver.ZipDriver
 
 class Flow {
@@ -25,7 +26,10 @@ class Flow {
             [targets, sources].flatten().each { it.findPacks(library, ui.config.skipPatterns) }
             ui.listPacks(library)
 
-            targets.each { it.writePacks(library.dependencyGroups) }
+            targets.each {
+                it.writePacks(library.dependencyGroups)
+                it.writeWorlds(library.worlds)
+            }
         } catch(e) {
             log.error "Uncaught exception in Flow", e
         } finally {
@@ -39,6 +43,13 @@ class Flow {
         TConfig.current().setArchiveDetector(
                 new TArchiveDetector(
                 TArchiveDetector.NULL,
-                "zip|mcpack|mcaddon", new ZipDriver()))
+                "zip|mcpack|mcaddon|mcworld", new MyZipDriver()))
+    }
+}
+
+class MyZipDriver extends ZipDriver {
+    @Override
+    protected boolean rdc(AbstractZipDriverEntry input, AbstractZipDriverEntry output) {
+        return false
     }
 }

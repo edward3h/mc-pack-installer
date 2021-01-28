@@ -6,7 +6,8 @@ import org.ethelred.mc.pack.Version
 /**
  * TODO
  *
- * @author eharman* @since 2020-10-16
+ * @author edward3h
+ * @since 2020-10-16
  */
 class PackInstances extends PackId {
     List<LocationPack> packs = []

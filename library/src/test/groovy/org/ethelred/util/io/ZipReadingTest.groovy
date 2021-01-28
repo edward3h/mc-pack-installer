@@ -8,7 +8,8 @@ import net.java.truevfs.access.TVFS
 /**
  * TODO
  *
- * @author eharman* @since 2020-08-03
+ * @author edward3h
+ * @since 2020-08-03
  */
 class ZipReadingTest extends Specification {
     def "test read zip contents"() {

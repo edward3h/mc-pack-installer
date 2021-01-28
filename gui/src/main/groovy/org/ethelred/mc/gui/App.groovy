@@ -6,7 +6,8 @@ import java.awt.BorderLayout as BL
 /**
  * TODO
  *
- * @author eharman* @since 2020-10-14
+ * @author edward3h
+ * @since 2020-10-14
  */
 class App {
     static void main(String[] args) {
