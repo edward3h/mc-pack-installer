@@ -225,7 +225,7 @@ function doClearFilter() {
     void writeWorlds(worlds) {
         def worldRoot = path.resolve("worlds")
         worlds.each {
-            writeResource(it, worldRoot, ".zip")
+            writeResource(it, worldRoot, ".mcworld")
         }
         writeTablePage("worlds", "MC World Listing", "Icon Name".split()) { markup ->
             worlds.each { w ->
@@ -242,7 +242,7 @@ function doClearFilter() {
                     }
                     td(class: "pack") {
                         div {
-                            a(href: "worlds/${w.zipName}.zip") {
+                            a(href: "worlds/${w.zipName}.mcworld") {
                                 mkp.yieldUnescaped("${w.name.html}")
                             }
                         }
@@ -265,17 +265,6 @@ function doClearFilter() {
             cmd.execute().waitForProcessOutput(System.out, System.err)
         }
     }
-
-//    void _worldHackSorry() {
-//        def worlds = output.resolve("worlds")
-//        Files.createDirectories(worlds)
-//        def downloads = (System.getProperty("user.home") + "/Downloads") as File
-//        downloads.eachFileMatch(~/.*\.mcworld$/) { f ->
-//            Files.copy(f.toPath(), worlds.resolve(f.name), StandardCopyOption.REPLACE_EXISTING)
-//            def zipFileName = f.name.replaceAll(~/\.mcworld$/, '.zip')
-//            Files.copy(f.toPath(), worlds.resolve(zipFileName), StandardCopyOption.REPLACE_EXISTING)
-//        }
-//    }
 
     // the groovy built in catches IOExceptions, I wanted them to be reported
     static void _withPrintWriter(Path path, Closure block) {
