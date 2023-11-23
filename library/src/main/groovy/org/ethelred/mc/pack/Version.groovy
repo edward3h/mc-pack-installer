@@ -11,6 +11,11 @@ class Version implements Comparable<Version> {
         this.list = list.reverse().dropWhile { it == 0 }.reverse()
     }
 
+    Version(String s) {
+        log.error("Unexpected version $s")
+        this.list = [1]
+    }
+
     @Override
     int compareTo(Version o) {
         def digits = [list.size(), o.list.size()].max()
